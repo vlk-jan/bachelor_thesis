@@ -1,0 +1,102 @@
+\documentclass{ctuthesis}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, automata}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{bibliography.bib}
+\usepackage{csquotes}
+\usepackage{subcaption}
+
+\newcommand{\bfc}[1]{{\color{ctublue}\textbf{#1}}\nopagebreak}
+\newcommand{\CC}{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+\ctusetup{
+xdoctype = B,
+xfaculty = F3,
+mainlanguage = english,
+titlelanguage = english,
+title-english = {Autonomous road crossing with a mobile robot},
+title-czech = {Autonomní přejezd silnice mobilním robotem},
+specification-file = {zadani.pdf},
+front-specification = {true},
+keywords-english = {Autonomous robot operation, behavior trees, collision avoidance, collision detection, finite-state machines, road crossing, ROS},
+keywords-czech = {Autonomní operace robota, detekce kolizí, konečné stavové automaty, přejíždění silnic, ROS, rozhodovací stromy, vyhýbání se kolizím},
+department-english = {Department of Cybernetics},
+author = {Jan Vlk},
+fieldofstudy-english = {Cybernetics and Robotics},
+fieldofstudy-czech = {Kybernetika a Robotika},
+supervisor = {Mgr. Martin Pecka, Ph.D.},
+supervisor-address = {Vision for Robotics and Autonomous Systems,\\ Resslova 9,\\ 12000 Praha 2},
+month = 6,
+year = 2023,
+}
+\ctuprocess
+\begin{abstract-english}
+    In this thesis, our task was to design, implement and evaluate an algorithm for the safe crossing of public roads with a middle-size mobile robot.\\
+    The first part of this task is to conclude whether it is safe to cross the road in the robot's current location.  If it is, the second part of the task is developing a control algorithm to perform the movement needed to cross the road. Continuous monitoring of the traffic situation is necessary for the safety of the maneuver.\\
+    We are also to provide evaluation metrics for determining the functionality and optimality of developed algorithms. The verification and evaluation of the developed algorithm will be conducted in simulation and a controlled real-world experiment.
+    %In this thesis, it was our task to design, implement and evaluate an algorithm for crossing roads with a middle-size mobile robot. The first part of this task is to conclude whether it is safe to cross the road in the spot the robot is currently situated. If it is, the second part of the task is to perform the actual movement needed to cross the road.\\
+    %We are to also provide evaluation metrics for determining the functionality and optimality of developed algorithms.
+\end{abstract-english}
+\begin{abstract-czech}
+    V této práci je naším úkolem navrhnout, implementovat a vyhodnotit algoritmus pro bezpečný přejezd silnic s mobilním robotem střední velikosti.\\
+    První část úkolu je zjistit, zda je bezpečné přejít silnici v místě, kde se robot právě nachází. Pokud ano, druhá část úkolu je navrhnout algoritmus pro řízení pohybu potřebného k přejetí silnice. Pro bezpečnost manévru je nutné provádět kontinuální monitorování dopravní situace.\\
+    V neposlední řadě je třeba navrhnout metriku pro vyhodnocení funkčnosti a optimálnosti vyvinutých algoritmů. Verifikaci a vyhodnocení vyvinutého algoritmu provedeme v simulaci a v kontrolovaném experimentu v reálném světě.
+    %V této práci je naším úkolem navrhnout, implementovat a vyhodnotit algoritmus pro přejezd silnic s mobilním robotem střední velikosti. První část úkolu je zjistit, zda je bezpečné přejít silnici v místě, kde se robot právě nachází. Pokud ano, druhá část úkolu je provést následné přejetí silnice.\\
+    %Dále je třeba navrhnout metriku pro vyhodnocení funkčnosti a optimálnosti vyvinutých algoritmů.
+\end{abstract-czech}
+\begin{thanks}
+    I would like to express my sincere gratitude to everyone who supported me throughout the completion of this bachelor's thesis. My most profound appreciation goes to my advisor, Martin Pecka, for his invaluable guidance, feedback and support throughout the research and development process.\\
+    I am also grateful to my family and friends for their unwavering support and motivation. Their love and encouragement kept me motivated to finish this thesis and achieve this milestone.\\
+    Finally, I want to acknowledge the faculty staff who generously shared their time for this research in its experimental phase. Their willingness to participate enabled me to conduct this study and make meaningful contributions to the field.\\
+    Thank you all for your support and encouragement!
+\end{thanks}
+\begin{declaration}
+    I declare that the presented work was developed independently and that I have listed all sources of information used within it in accordance with the methodical instructions for observing the ethical principles in the preparation of university theses.
+
+    \medskip
+
+    Prague, \today
+
+    \vspace*{2cm}
+
+    Prohlašuji, že jsem předloženou práci vypracoval samostatně a že jsem uvedl veškeré použité informační zdroje v souladu s Metodickým pokynem o dodržování etických principů při přípravě vysokoškolských závěrečných prací.
+
+    \medskip
+
+    Praha, {\selectlanguage{czech}\today}
+\end{declaration}
+\begin{document}
+    \maketitle
+
+    \input{sections/Introduction.tex}
+
+    \chapter{Theoretical background}
+        \input{sections/BT.tex}
+        \input{sections/FSM.tex}
+        \input{sections/Approach.tex}
+        \input{sections/Theory_rest.tex}
+
+    \chapter{Used hardware and software}
+        \input{sections/Software.tex}
+        \input{sections/Hardware.tex}
+        \input{sections/Gazebo.tex}        
+
+    \chapter{Behavior tree algorithm structure}
+
+    \chapter{Nodes implementation}
+        This chapter will provide the implementation details for individual nodes used in our BT algorithm. We will split these descriptions into BT nodes, and auxiliary functions used in the nodes.
+        \input{sections/BT_nodes.tex}
+        \input{sections/Aux_functions.tex}
+        
+    %\chapter{Simulation experiments}
+
+    %\chapter{Real-world experiments}
+
+    %\chapter{Discussion}
+
+    %\chapter{Summary}
+
+    \printbibliography
+
+\end{document}

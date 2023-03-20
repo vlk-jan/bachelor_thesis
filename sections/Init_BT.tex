@@ -1,0 +1,6 @@
+\subsection{Init BT}
+        Here we will present the nodes used in the Init sub-tree. This sub-tree is used to initialize the BT algorithm. It is the first sub-tree to be executed.\\
+        This tree is going to be executed only once per road to cross. We will achieve this by using the \texttt{SequenceStar} node as the root of this sub-tree.\\\\
+        \bfc{GetPosition}\\
+            This node is responsible for obtaining the current GPS position of the robot and converting it to the UTM coordinate system. It is implemented as a ROS topic subscriber. The topic subscribed is \texttt{fix/} where the GPS data are being published.\\
+            The obtained data are then converted to UTM using the \texttt{gps\_to\_utm} function defined in \ref{sec:geo_func}. The result is then stored as two BT blackboard variables -- \texttt{easting} and \texttt{northing}.

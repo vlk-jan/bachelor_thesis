@@ -1,0 +1,94 @@
+\section{Behavior trees}
+    A behavior tree (BT) is a way to structure algorithms -- the switching between individual tasks in an autonomous agent. It was created to express behavior patterns for NPCs (non-playable characters) in computer games. Since then, it has found many more applications, and nowadays, it is also widely used in robotics and AI applications.\\
+    BTs, as the name suggests, are tree-like structures where each node represents an action, a condition, a control, or a decorator node. Action and control nodes are leaves of the tree structure. Control nodes are used to control and modify the flow of the tree. Examples of these nodes are \texttt{sequence}, \texttt{fallback}, or \texttt{repeat}. Decorator nodes are used to modify the return values, thus modifying the behavior of its children. Examples of these nodes are \texttt{force-success}, \texttt{force-failure}, or \texttt{inverter}.\\
+    The execution of a BT commences at the root node and then progressively traverses the tree structure in a depth-first fashion polling its nodes. The nodes' polling, more frequently called the ticking, is periodically repeated. Each node, once ticked, begins its execution process, and once finished, it returns a status. This status can be either \texttt{SUCCESS}, \texttt{FAILURE}, or \texttt{RUNNING}. The action and control nodes are responsible for determining and returning these states. The control nodes alter the tree's flow and tick handling based on its children's return states. Decorator nodes modify the return states of their children. The return status of some nodes is shown in table \ref{tab:returns}.
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            Node type & \texttt{SUCCESS} & \texttt{FAILURE} & \texttt{RUNNING} \\
+            \hline\hline
+            \texttt{Action} & Succesful completion & Unable to complete & During completion \\
+            \hline
+            \texttt{Condition} & Condition is true & Condition is false & N/A \\
+            \hline
+            \texttt{Sequence} & All children succeed & One child fails & One child running \\
+            \hline
+            \texttt{Fallback} & One child succeeds & All children fail & One child running \\
+            \hline
+            \texttt{Parallel} & $N$ children succeed & $<N$ children succeed & All children running \\
+            \hline
+            \texttt{Repeat} & Child succeeds & Child fails $x$ times & Child running \\
+            \hline
+        \end{tabular}
+        \caption{Return states of some nodes.}
+        \label{tab:returns}
+    \end{table}
+
+    A more thorough explanation of the behavior trees can be found in the first chapter in \cite{BT_intro}.
+
+    \subsection{Commonly used nodes}
+        Here we will present the most commonly used nodes and their functionality.\\\\
+        \textbf{Sequence} -- Control node that polls its children one at a time in a predefined order. If one of the children were to return \texttt{FAILURE}, the polling of other children is stopped, and the \texttt{sequence} node returns \texttt{FAILURE}. The same happens if one of the children returns \texttt{RUNNING}. If all children return \texttt{SUCCESS} the \texttt{sequence} node returns \texttt{SUCCESS}.\\\\
+        \textbf{Fallback} -- Also known as \texttt{Selector} is a control node that polls its children one at a time in a predefined order. If one of the children were to return \texttt{SUCCESS}, the polling of other children is stopped, and the \texttt{fallback} node returns \texttt{SUCCESS}. The same happens if one of the children returns \texttt{RUNNING}. If all children return \texttt{FAILURE} the \texttt{fallback} node returns \texttt{FAILURE}.\\\\
+        \textbf{Parallel} -- Control node that allows multiple actions to run concurrently. It returns \texttt{SUCCESS} if $N$ or more children return \texttt{SUCCESS} and \texttt{FAILURE} if less than $N$ children return \texttt{SUCCESS}. If all children return \texttt{RUNNING} the \texttt{parallel} node returns \texttt{RUNNING}.\\\\
+        \textbf{Repeat} -- Control node that polls its child a specified number of times or until the child returns \texttt{SUCCESS}, whichever comes first. If the child returns \texttt{RUNNING}, the \texttt{repeat} node returns \texttt{RUNNING}. If the child does not return \texttt{SUCCESS} before the number of repetition is reached the \texttt{repeat} node returns \texttt{FAILURE}.\\\\
+        \textbf{Inverter} -- Decorator node that inverts the return state of its child. If the child returns \texttt{SUCCESS}, the \texttt{inverter} node returns \texttt{FAILURE} and vice versa. If the child returns \texttt{RUNNING} the \texttt{inverter} node returns \texttt{RUNNING}.\\\\
+        \textbf{Force-success} -- Decorator node that returns \texttt{SUCCESS} regardless of the return state of its child.\\\\
+        \textbf{Force-failure} -- Decorator node that returns \texttt{FAILURE} regardless of the return state of its child.
+
+    \subsection{Graphical representation of BTs}
+        We will represent the BTs in this work in the following way. Action nodes will be rectangular with the name of the action written inside. Control nodes will be elliptical with the name of the condition written inside. Control and decorator nodes will be rectangular with a corresponding symbol inside. The symbols are shown in a table \ref{tab:symbols}.\\
+        If the BT has a sub-tree in its structure, we will represent it as a diamond shape node with the sub-tree name written inside.
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{|l|l|c|}
+                \hline
+                \textbf{Node type} & \textbf{Description} & \textbf{Symbol} \\
+                \hline\hline
+                \texttt{Root} & The root of the tree & \texttt{Root} \\
+                \hline
+                \texttt{Sequence} & Ticks its children if the return is \texttt{SUCCESS} & $\to$ \\
+                \hline
+                \texttt{SequenceStar} & Ticks its children if the return is \texttt{SUCCESS} & $\to^{*}$ \\
+                \hline
+                \texttt{Fallback} & Ticks its children if the return is \texttt{FAILURE} & $?$ \\
+                \hline
+                \texttt{Parallel} & Allows multiple actions to run concurently & $\rightrightarrows$ \\
+                \hline
+                \texttt{Repeat} & Repeats the child node ($x$) times & $\circ(x)$ \\
+                \hline
+                \texttt{ForceSuccess} & Allways returns \texttt{SUCCESS} & $\checkmark$ \\
+                \hline
+                \texttt{ForceFailure} & Allways returns \texttt{FAILURE} & $\times$ \\
+                \hline
+                \texttt{Inverter} & Inverts the return value of its child & $\neq$ \\
+                \hline
+            \end{tabular}
+            \caption{Symbols used for control and decorator nodes in BTs.}
+            \label{tab:symbols}
+        \end{table}
+    
+    \subsection{BT example}
+        We will present a simple example demonstrating the BTs structure and design principles.\\
+        The example BT is shown in figure \ref{fig:example_tree}. This BT was created in the algorithm design's beginning phase, and its modified version will be presented later as it is used in the final implementation. The goal of this sub-tree was to position the robot so that it would cross the road as fast as possible, meaning we wanted the robot to stand perpendicular to the road.
+        \begin{figure}[H]
+            \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
+                \node [draw] {$Root$}
+                    child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
+                    child {node [draw, xshift=0-.1cm] {GetAzimuth}}
+                    child {node [diamond, draw, aspect=2.3] {Heading}}
+                    child {node [draw, xshift=0-.5cm] {$\circ(10)$}
+                    child {node [draw] {?}
+                    child {node [ellipse, draw, xshift=0-0.5cm] {RobotPerpendicular}}
+                    child {node [draw] {$\times$}
+                    child {node [diamond, draw, aspect=2.3] {Rotate}}}}}};
+            \end{tikzpicture}
+            \caption{BT example.}
+            \label{fig:example_tree}
+        \end{figure}
+        We start in the root node and continue straight to the \texttt{sequence} node. From there, we go to the action node GetAzimuth, which gives us the current heading of the robot. If the execution of the GetAzimuth node is successful, we continue to the Heading sub-tree node. This sub-tree aims to calculate the heading the robot needs to achieve in order to be perpendicular. If all nodes inside the sub-tree are successful, we continue to the \texttt{repeat} node. This node will repeat its children ten times (or less if success is achieved sooner). The first child we will tick is a \texttt{fallback} node, with its first child being a condition node RobotPerpendicular. The condition node return value states whether or not the robot is already perpendicular to the road, we mean to cross. If we are not yet perpendicular, we continue. The next node we tick is a \texttt{force-failure} node with a sub-tree node as its child. The sub-tree is responsible for rotating the robot to the desired heading.
+
+    \subsection{Other BT nodes}
+        Here we will present other BT nodes. These nodes are an expansion on the common ones and are implementation specific.\\\\
+        \textbf{SequenceStar} ($\to^{*}$) -- Also know as \texttt{SequenceWithMemory}, a control node that functions in the same way as \texttt{Sequence}. The only difference is that this node does not repeat children that returned \texttt{SUCCESS} until all children have. Meaning until the \texttt{SequenceStar} node return \texttt{SUCCESS} it will tick only the children that have not succeeded yet.
