@@ -1,15 +1,15 @@
 \section{Behavior tree nodes}
     Here we will present the methods used to implement the individual nodes of our BT algorithm. We will split the nodes into categories based on the sub-tree they belong to.
     \subsection{Introduction}
-        The BT algorithm is implemented using the behaviortree-cpp-v3 library. We will therefore present the way we create, implement and run the tree. We will also show how nodes are created, implemented and used.\\\\
+        The BT algorithm is implemented using the behaviortree-cpp-v3 library. Therefore, we will present how we create, implement and run the tree. We will also show how nodes are created, implemented, and used.\\\\
         \bfc{Creating the node}\\
-            To create the node we need to create a class that inherits from one of the parent classes present in the library. The parent classes depend on the type of node we want to create. If we are creating an action node, we will inherit from the \texttt{SyncActionNode} class. If we are creating a condition node, we will inherit from the \texttt{ConditionNode} class.\\
-            For all nodes we must define two functions the \texttt{tick} and \texttt{providedPorts} functions.\\
+            To create the node, we need to create a class that inherits from one of the parent classes in the library. The parent classes depend on the type of node we want to create. If we create an action node, we inherit from the \texttt{SyncActionNode} class. If we create a condition node, we will inherit from the \texttt{ConditionNode} class.\\
+            We must define two functions for all nodes, the \texttt{tick} and \texttt{providedPorts} functions.\\
             The \texttt{tick} function is responsible for the actual implementation of the node. It is called every time the node is executed. It is also responsible for returning the state of the node.\\
-            The \texttt{providedPorts} function is responsible for defining the ports the node will use. This function must be defined even if the node does not use any ports.\\\\
+            The \texttt{providedPorts} function defines the ports the node will use. This function must be defined even if the node does not use any ports.\\\\
         \bfc{Using the node}\\
-            To use the node, we first have to create a tree. We do this by creating a class \texttt{Road\_cross\_tree} in which we have a \texttt{BehaviorTreeFactory} object. This object is used to create the tree. We also have a \texttt{Tree} object which is used to store and run the tree.\\
-            If we want to use a node, we have to register it in the \texttt{BehaviorTreeFactory} object. We do this by calling the \texttt{registerNodeType} function. For this function we need to specify the class of the node we want to register, eg. one of the nodes we created. It also takes one \texttt{std::string} parameter which identifies the name of the node in our BT algorithm \texttt{.xml} file.\\\\
+            To use the node, we first have to create a tree. We create a class \texttt{Road\_cross\_tree} with a \texttt{BehaviorTreeFactory} object. This object is used to create the tree. We also have a \texttt{Tree} object used to store and run the tree.\\
+            To use a node, we must register it in the \texttt{BehaviorTreeFactory} object. We do this by calling the \texttt{registerNodeType} function. For this function, we need to specify the class of the node we want to register, e.g., one of the nodes we created. It also takes one \texttt{std::string} parameter, which identifies the name of the node in our BT algorithm \texttt{.xml} file.\\\\
         \bfc{Creating and running the tree}\\
             To create the tree, we first must have a \texttt{.xml} file with the tree structure. This file is then parsed by the \texttt{BehaviorTreeFactory} object using the \texttt{createTreeFromFile} function. The result is a \texttt{Tree} object which we can then run.\\
             To run the tree, we call the \texttt{tickRoot} function on the \texttt{Tree} object. This function returns the state of the root node of the tree.\\\\
@@ -17,8 +17,8 @@
             The blackboard is a shared memory between the nodes of the tree. It is used to store data that is being used by multiple nodes.\\
             It is also the reason why we implement the \texttt{providedPorts} function. This function specifies the ports the node will use. These ports can take a constant value (specified during the creation of the tree structure) or look for a value in the blackboard.\\\\
         \bfc{Logging}\\
-            The BT library also provides us with a logging functionality. This functionality is useful for debugging and testing.\\
-            We can use different types of loggers. The most common one is the \texttt{StdCoutLogger} which logs to the standard output. We can also use the \texttt{FileLogger} which logs to a file.\\
+            The BT library also provides us with logging functionality. This functionality is useful for debugging and testing.\\
+            We can use different types of loggers. The most common one is the \texttt{StdCoutLogger} which logs to the standard output. We can also use the \texttt{FileLogger}, which logs to a file.\\
             We will use the \texttt{FileLogger} to log the tree execution. This logger is useful for its integration with the \texttt{Groot} application as we can import the produced file and visualize the tree execution.\\
             The logging will be used only for debugging and testing purposes and serves no other function in the final product.
     \input{sections/Init_BT.tex}
