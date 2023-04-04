@@ -40,14 +40,15 @@
             \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
                 \node [draw] {$Root$}
                     child {node [draw] {$\to^{*}$} edge from parent [-{Stealth[length=2.5mm]}]
-                    child {node [draw, xshift=0-2.5cm] {$\to^{*}$}
-                    child {node [draw] {get\_position}}
-                    child {node [ellipse, draw] {cross\_road}}}
+                    child {node [ellipse, draw, xshift=0-0.4cm] {StartAlgorithm}}
+                    child {node [draw] {$\to^{*}$}
+                    child {node [draw, xshift=0-2.5cm] {GetPosition}}
+                    child {node [ellipse, draw, xshift=0-2.5cm] {CrossRoad}}}
                     child {node [draw] {?}
-                    child {node [ellipse, draw, xshift=1.1cm] {place\_suitable}}
+                    child {node [ellipse, draw, xshift=1.1cm] {PlaceSuitable}}
                     child {node [draw, xshift=1cm] {$\to$}
-                    child {node [ellipse, draw, xshift=0-1.1cm] {better\_place}}
-                    child {node [draw, xshift=0-0.6cm] {move\_to\_place}}}}};
+                    child {node [ellipse, draw, xshift=0-1.1cm] {BetterPlace}}
+                    child {node [draw, xshift=0-0.6cm] {MoveToPlace}}}}};
             \end{tikzpicture}
             \caption{The Init-BT structure.}
             \label{fig:Init-BT}
