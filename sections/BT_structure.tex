@@ -26,9 +26,11 @@
         \begin{tikzpicture}[sibling distance=30mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
                 child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
+                child {node [ellipse, draw] {StartAlgorithm}}
+                child {node [draw] {$\to^{*}$}
                 child {node [diamond, draw, aspect=2.3, xshift=0-1cm, yshift=0-0.5cm] {Init-BT}}
-                child {node [diamond, draw, aspect=2.9, yshift=0-0.5cm] {Perpendicular-BT}}
-                child {node [diamond, draw, aspect=2.3, xshift=1.5cm, yshift=0-0.5cm] {Crossing-BT}}};
+                child {node [diamond, draw, aspect=2.3, yshift=0-0.5cm] {Perpendicular-BT}}
+                child {node [diamond, draw, aspect=2.3, xshift=1.5cm, yshift=0-0.5cm] {Crossing-BT}}}};
         \end{tikzpicture}
         \caption{Main BT structure.}
         \label{fig:main-BT}
@@ -39,17 +41,18 @@
     \begin{figure}[H]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
-                child {node [draw] {$\to^{*}$} edge from parent [-{Stealth[length=2.5mm]}]
-                child {node [ellipse, draw, xshift=0-0.4cm] {StartAlgorithm}}
+                child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
                 child {node [draw] {$\to^{*}$}
-                child {node [draw, xshift=0-2.5cm, yshift=0-0.1cm] {GetPosition}}
-                child {node [ellipse, draw, xshift=0-2.6cm, yshift=0-0.1cm] {CrossRoad}}}
+                child {node [draw] {GetPosition}}
+                child {node [ellipse, draw] {CrossRoad}}}
+                child {node [draw, xshift=1cm] {$\checkmark$}
+                child {node [draw] {$\circ(10)$}
                 child {node [draw] {?}
-                child {node [ellipse, draw, xshift=1.9cm, yshift=0.3cm] {PlaceSuitable}}
-                child {node [draw, xshift=1.65cm, yshift=0-0.3cm] {$\to$}
-                child {node [ellipse, draw, xshift=0-1.1cm] {BetterPlace}}
-                child {node [draw, xshift=0-0.6cm] {MoveToPlace}}}
-                child {node [draw, yshift=0.65cm] {GetBetterPlace}}}};
+                child {node [ellipse, draw] {PlaceSuitable}}
+                child {node [draw] {$\to$}
+                child {node [ellipse, draw, xshift=0-0.1cm] {BetterPlace}}
+                child {node [draw, xshift=0.1cm] {MoveToPlace}}}
+                child {node [draw] {GetBetterPlace}}}}}};
         \end{tikzpicture}
         \caption{The Init-BT structure.}
         \label{fig:Init-BT}

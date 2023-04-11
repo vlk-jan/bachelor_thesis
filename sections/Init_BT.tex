@@ -17,4 +17,4 @@
         This node states whether the stored robot's location, as blackboard variable, is suitable for crossing.\\
         It uses the second return value from the ROS service called from the GetPosition node. As stated, this value takes into account the road cost for our location from the road-cost algorithm (\ref{sec:road_cost}) and the context score calculated separately before the service call.\\
         The context score is based on the contextual information that is available to us. This information may be passed from other nodes (e.g., computer vision node for detecting road parameters) or set by the operator.\\
-        At the moment, for simplicity reasons, we are only considering that the robot would cross one road during the entirety of the mission. This limitation is only present in the contextual score, as other parts are designed to be used multiple times during the duration of the mission.
+        The calculation of the context score and obtaining of the contextual information is described in \ref{sec:context}.

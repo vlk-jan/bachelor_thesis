@@ -13,7 +13,7 @@
             We use multiple parameters to determine the cost of crossing. The most important ones are the geometrical properties of the road. This includes the curvature of the road, the elevation profile, and the proximity to intersections. We also use the road classification to add to the cost function.\\
             Other parameters would be beneficiary, such as the road width, the presence of a pedestrian crossing, and the expected traffic speed.\\
             Unfortunately, we do not have access to all of these parameters. We use the OSM data, which does not necessarily contain all those additional parameters. Therefore, we will inject this information directly into the algorithm and deal with these parameters separately.\\
-            The OSM data also do not contain the elevation profile of the road. This data is also not easily obtainable from free or open-source sources. The elevation data we use were purchased from the Land Survey Office of the Czech Republic. We use the ZABAGED\footnote{\url{https://geoportal.cuzk.cz/(S(dcpfei0nmxcwgoe4frurwfgm))/Default.aspx?lng=EN&mode=TextMeta&text=dSady_zabaged&side=zabaged&menu=24}} data. This data from the Land Survey Office are available only for the area of the Czech Republic. However, any file with elevation data with the correct formatting can be used. The used file format is as follows. A text file with the easting, northing, and altitude of one point is on one line separated by a space. The lines are separated with a newline character \texttt{\textbackslash n}, each describing exactly one point.\\
+            The OSM data also do not contain the elevation profile of the road. This data is also not easily obtainable from free or open-source sources. The elevation data we use were purchased from the Land Survey Office of the Czech Republic. We use the ZABAGED\cite{ZABAGED} data. This data from the Land Survey Office are available only for the area of the Czech Republic. However, any file with elevation data with the correct formatting can be used. The used file format is as follows. A text file with the easting, northing, and altitude of one point is on one line separated by a space. The lines are separated with a newline character \texttt{\textbackslash n}, each describing exactly one point.\\
             If the elevation data are not provided, the algorithm will still function. It will just not take the elevation profile into account. The road cost will be determined only from the curvate and road classification.\\\\
         \bfc{Algorithm}\\
             The algorithm is divided into several parts.\\
@@ -94,3 +94,64 @@
             The function takes the robot's heading and the road's azimuth. The road azimuth was obtained using the function stated above.\\
             The algorithm creates two new variables, one $+\pi$ and one $-\pi$ from the road's azimuth. This is necessary as we do not know in what order are road points stored and we do not need to differentiate the side we approach the road from.\\
             Then it computes the difference between the robot's heading and the two new azimuths. The smallest difference is then returned.\\\\
+    
+    \subsection{Contextual information and score}
+    \label{sec:context}
+        \bfc{Contextual information}\\
+            The contextual information provide us with valuable information about the environment. This information is a vital part in choosing the best location for crossing.\\
+            The contextual information we use are the following
+            \begin{itemize}
+                \item \textbf{Maximal speed} -- The maximal speed of vehicles on the road.
+                \item \textbf{Number of lanes} -- The number of lanes on the road.
+                \item \textbf{Road width} -- The width of the road.
+                \item \textbf{Road type} -- The type of the road.
+                \item \textbf{Peddestrian crossing} -- Whether there is a pedestrian crossing on the road and its location.
+            \end{itemize}
+        \bfc{Obtaining contextual information}\\
+            The contextual information may be obtained from several sources. One source could be the OSM database. However, this database is not always up to date, and there is no guarantee, that the neccessary information will be available. Other sources could be the direct observations of the robot or the information provided by other ROS nodes.\\
+            The contextual information in our case will be obtained in yet another fashion. The informaion will be submitted by the user. We have prepared a python class with the appropriate variables and functions. In order to use the contextual information, the user should create an instance of this class and fill in the appropriate variables.\\
+            The creation of the class is recommended to be done in advance. It could be automated or done manualy. The class also contains functions neccessary for storing and loading the contextual information.\\
+            During the execution of our algorithm the tree node will call a ROS service to obtain the contextual information. This service will return the contextual information for a closest road to requested location.\\
+            Thanks to this approach, we are able to log the contextual information for multiple roads and use them later for the evaluation of the crossing locations.\\\\
+        \bfc{Calculating the context score}\\
+            The context score is calculated as a sum of individual point for each of the individual contextual information.
+            \begin{equation}
+                \xi_{\rm{context}} = \sum_{i=1}^{n} \xi_{\rm{context},i},
+            \end{equation}
+            where $n=5$ as we currently have only five different context information.\\
+            The individual points are calculated as follows
+            \begin{itemize}
+                \item \textbf{Maximal speed} -- $v_{\rm{max}}$
+                    \begin{itemize}
+                        \item $v_{\rm{max}}\leq30\quad\to\quad\xi_{\rm{context,1}}=3$
+                        \item $v_{\rm{max}}\leq50\quad\to\quad\xi_{\rm{context,1}}=2$
+                        \item $v_{\rm{max}}\leq80\quad\to\quad\xi_{\rm{context,1}}=1$
+                    \end{itemize}
+                \item \textbf{Number of lanes} -- $n_{\rm{lanes}}$
+                    \begin{itemize}
+                        \item $n_{\rm{lanes}}=1\quad\to\quad\xi_{\rm{context,2}}=5$
+                        \item $n_{\rm{lanes}}=2\quad\to\quad\xi_{\rm{context,2}}=4$
+                        \item $n_{\rm{lanes}}=3\quad\to\quad\xi_{\rm{context,2}}=2$
+                        \item $n_{\rm{lanes}}=4\quad\to\quad\xi_{\rm{context,2}}=1$
+                    \end{itemize}
+                \item \textbf{Road width} -- $w_{\rm{road}}$
+                    \begin{itemize}
+                        \item $w_{\rm{road}}\leq3.5\quad\to\quad\xi_{\rm{context,3}}=4$
+                        \item $w_{\rm{road}}\leq4.5\quad\to\quad\xi_{\rm{context,3}}=3$
+                        \item $w_{\rm{road}}\leq5.5\quad\to\quad\xi_{\rm{context,3}}=2$
+                        \item $w_{\rm{road}}\leq6.5\quad\to\quad\xi_{\rm{context,3}}=1$
+                    \end{itemize}
+                \item \textbf{Road type}
+                    \begin{itemize}
+                        \item motorway $\quad\to\quad\xi_{\rm{context,4}}=-10$
+                        \item trunk $\quad\qquad\to\quad\xi_{\rm{context,4}}=-4$
+                        \item primary $\qquad\to\quad\xi_{\rm{context,4}}=1$
+                        \item secondary $\quad\to\quad\xi_{\rm{context,4}}=2$
+                        \item tertiary $\qquad\to\quad\xi_{\rm{context,4}}=3$
+                    \end{itemize}
+                \item \textbf{Pedestrian crossing}
+                    \begin{itemize}
+                        \item if present $\quad\to\quad\xi_{\rm{context,5}}=10$
+                    \end{itemize}
+            \end{itemize}
+
