@@ -21,17 +21,17 @@
             The second part is responsible for determining the curvature of the roads. This is done by calculating the radius of the circumcircle of the triangle formed by the two adjacent road segments. This approach is visualized in image \ref{fig:curvature}. We then sort the road segments into multiple classes based on their radius. In this part, we also detect road junctions and penalize the road segments close to the junction.\\
             In the third part, we determine the elevation profile of the road. We then classify the individual road segments with the TPI (Terrain Profile Index) method. Some TPI classes are presented in image \ref{fig:TPI}.\\
             In the last part, we combine the results from the previous parts and calculate the final cost of crossing for each segment.
-            \begin{figure}[H]
+            \begin{figure}[ht]
             \centering
-            \begin{subfigure}[b]{0.45\textwidth}
+            \begin{subfigure}[b]{0.9\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/path_curvature.pdf}
+                \includegraphics[trim={0cm 3.55cm 0cm 2.8cm}, clip, width=\textwidth]{images/path_curvature.pdf}
                 \caption{Visualization of the circumcircle radii.}
                 \label{fig:curvature}
             \end{subfigure}
-            \begin{subfigure}[b]{0.45\textwidth}
+            \begin{subfigure}[b]{0.9\textwidth}
                 \centering
-                \includegraphics[width=\textwidth]{images/TPI_classification.pdf}
+                \includegraphics[trim={0cm 5.2cm 0cm 5.2cm}, clip, width=\textwidth]{images/TPI_classification.pdf}
                 \caption{Representation of certain TPI classes.}
                 \label{fig:TPI}
             \end{subfigure}
@@ -71,7 +71,7 @@
             In the entire project, we use the ENU orientation. However, as we rely on other ROS nodes to provide us with the azimuth, we need to be able to convert the azimuth from NED to ENU.\\
             The conversion should be much simpler since we do not deal with coordinates but with already computed azimuths.\\
             The image \ref{fig:dir_indi} shows the two possible orientations of the azimuth. This image also provides us with the insight we need to determine the conversion formula. We need to divide the formula into two parts.
-            \begin{figure}[H]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{images/direction_indicator.pdf}
                 \caption{Two possible orientations of the azimuth.}
@@ -146,8 +146,8 @@
                         \item motorway $\quad\to\quad\xi_{\rm{context,4}}=-10$
                         \item trunk $\quad\qquad\to\quad\xi_{\rm{context,4}}=-4$
                         \item primary $\qquad\to\quad\xi_{\rm{context,4}}=1$
-                        \item secondary $\quad\to\quad\xi_{\rm{context,4}}=2$
-                        \item tertiary $\qquad\to\quad\xi_{\rm{context,4}}=3$
+                        \item secondary $\,\quad\to\quad\xi_{\rm{context,4}}=2$
+                        \item tertiary $\,\qquad\to\quad\xi_{\rm{context,4}}=3$
                     \end{itemize}
                 \item \textbf{Pedestrian crossing}
                     \begin{itemize}
