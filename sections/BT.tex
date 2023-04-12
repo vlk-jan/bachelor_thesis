@@ -91,4 +91,6 @@
 
     \subsection{Other BT nodes}
         Here we will present other BT nodes. These nodes are an expansion on the common ones and are implementation specific.\\\\
-        \textbf{SequenceStar} ($\to^{*}$) -- Also know as \texttt{SequenceWithMemory}, a control node that functions in the same way as \texttt{Sequence}. The only difference is that this node does not repeat children that returned \texttt{SUCCESS} until all children have. Meaning until the \texttt{SequenceStar} node return \texttt{SUCCESS} it will tick only the children that have not succeeded yet.
+        \textbf{SequenceStar} ($\to^{*}$) -- Also know as \texttt{SequenceWithMemory}, a control node that functions in the same way as \texttt{Sequence}. The only difference is that this node does not repeat children that returned \texttt{SUCCESS} until all children have. Meaning until the \texttt{SequenceStar} node return \texttt{SUCCESS} it will tick only the children that have not succeeded yet.\\\\
+        \textbf{ReturnSuccess} -- A leaf node that returns \texttt{SUCCESS} once ticked. We will represent this node as an ellipse with a checkmark character ($\checkmark$) inside.\\\\
+        \textbf{ReturnFailure} -- A leaf node that returns \texttt{FAILURE} once ticked. We will represent this node as an ellipse with a cross character ($\times$) inside.
