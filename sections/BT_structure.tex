@@ -71,7 +71,7 @@
 
 \section{Perpendicular BT}
 \label{sec:Perpendicular-BT}
-    This sub-tree is responsible for positioning the robot for crossing in the most optimal way. We have determined that to be the one in which the robot will cross the road the fastest. As such, the position of the robot should be perpendicular to the road it is going to cross. Figure \ref{fig:Perpendicular-BT} shows the BT structure for achieving so.
+    This sub-tree is responsible for positioning the robot for crossing in the most optimal way. We have determined that to be the one in which the robot will cross the road the fastest. As such, the position of the robot should be perpendicular to the road it is going to cross. Figure \ref{fig:Perpendicular-BT} shows the BT structure for achieving so.\\
     \begin{figure}[ht]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
@@ -97,10 +97,67 @@
         \caption{The Perpendicular-BT structure.}
         \label{fig:Perpendicular-BT}
     \end{figure}
-    This tree is also only needed once in each run of the crossing algorithm therefore, we start with a \texttt{SequenceStar} node after \texttt{Root}.\\
-    The first significant sub-structures task is determining the azimuth for the robot to be perpendicular to the road. This also does not need to be repeated for a single road, so we start with a \texttt{SequenceStar} control node, next, we have a \texttt{Repeat} node. The action to be repeated is the obtaining of the robot's azimuth. The following steps are also behind a \texttt{Repeat} control node. This part of the algorithm calculates the azimuth the robot should have to be perpendicular. Firstly we need to obtain the robot's position -- \texttt{GetPosition} action node. Next, we need to determine the road heading closest to the robot. For this purpose, we have the action node \texttt{RoadHeading}. Finally, we calculate the proper azimuth for the robot with the action node \texttt{ComputeHeading}. This concludes the left branch of our Perpendicular-BT.\\
+    The first branch of this tree is also only needed once in each run of the crossing algorithm. Therefore, the first node after the \texttt{Root} node is a \texttt{SequenceStar} control node.\\
+    The task of the first branch is to determine the azimuth for the robot to be perpendicular to the road. This also does not need to be repeated for a single road, so we start with a \texttt{SequenceStar} node, next, we have a \texttt{Repeat} node. The action to be repeated is the obtaining of the robot's azimuth. The following steps are also behind a \texttt{Repeat} control node. This part of the algorithm calculates the azimuth the robot should have to be perpendicular. Firstly we need to obtain the robot's position -- \texttt{GetPosition} action node. Next, we need to determine the road heading closest to the robot. For this purpose, we have the action node \texttt{RoadHeading}. Finally, we calculate the proper azimuth for the robot with the action node \texttt{ComputeHeading}. This concludes the left branch of our Perpendicular-BT.\\
     The right branch starts with a \texttt{Repeat} node, followed by a \texttt{Sequence} node. The idea behind this branch is to utilize the azimuth value computed in the left branch and orient the robot accordingly. Firstly we need to obtain the robot's azimuth with the \texttt{GetAzimuth} action node. While this might seem redundant, we have just got the azimuth for calculation, it is vital to update the current azimuth as the value of obtained azimuth is only valid in the first run of the second branch. After receiving the current azimuth, we follow with a \texttt{Fallback} node and its first child, a condition node \texttt{RobotPerpendicular}. This node tells us if the robot has achieved the optimal azimuth we calculated earlier. If it has not, we continue, thanks to the \texttt{Fallback} node to the last part of this sub-tree. We want this part to always return \texttt{FAILURE}. This is necessary because we check the correct position before the movement. The last part is responsible for the movement of the robot. Firstly we try to rotate the robot with \texttt{RotateRobot} action node. If the rotation was unsuccessful, we tried to move the robot away from the road with \texttt{StepFromRoad}. This is implemented as the robot rotation could have brought the robot onto the road, which is forbidden.\\
     While we could unite the first two \texttt{Repeat} nodes, maybe even all three, we chose not to do so. The reason for not merging the nodes is to allow each algorithm part to fail independently. The number of repetitions for each node was set to 10, which we determined to be the optimal value.
 
 \section{Crossing BT}
 \label{sec:Crossing-BT}
+    This tree is the most important part of the whole algorithm as it facilitates the crossing of the road. Figure \ref{fig:Crossing-BT} shows the structure of the tree.\\
+    \begin{figure}[ht]
+        \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
+            \node [draw] {$Root$}
+                child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
+                child {node [draw, xshift=0-1.2cm] {GetCars}}
+                child {node [draw, xshift=0-1.5cm] {?}
+                child {node [ellipse, draw, xshift=1.5cm] {CarsInTrajectory}}
+                child {node [diamond, draw, aspect=2.3, xshift=0.9cm, yshift=0-1.5cm] {StartCrossing}}
+                child {node [draw, xshift=0.3cm] {ContinueMovement}}}
+                child {node [diamond, draw, aspect=2.3, xshift=0-1.3cm] {StartCrossing}}
+                child {node [draw, xshift=0-1.3cm] {$\to$}
+                child {node [draw, xshift=0.3cm, yshift=0-1.5cm] {CalculateCollision}}
+                child {node [draw, xshift=0-0.1cm, yshift=0-1.5cm] {?}
+                child {node [draw, xshift=0-0.8cm] {$\to$}
+                child {node [ellipse, draw, xshift=0-0.3cm] {CollisionImminent}}
+                child {node [draw, xshift=0] {?}
+                child {node [ellipse, draw, xshift=0-0.2cm] {CollisionFwdMove}}
+                child {node [draw] {?}
+                child {node [draw] {$\to$}
+                child {node [ellipse, draw, xshift=0-1.2cm] {CollisionBwdMove}}
+                child {node [draw] {StopMovement}}}
+                child {node [draw, xshift=0-0.7cm] {MoveBwd}}}
+                child {node [draw, xshift=0-0.9cm] {MoveFwd}}}}
+                child {node [draw, xshift=0-1cm] {ContinueMovement}}}}
+                child {node [diamond, draw, aspect=2.3, xshift=0-1.9cm] {Finished}}};
+        \end{tikzpicture}
+        \caption{The Crossing-BT structure.}
+        \label{fig:Crossing-BT}
+    \end{figure}
+
+    \begin{figure}[ht]
+        \begin{subfigure}{0.49\textwidth}
+            \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
+                \node [draw] {$Root$}
+                    child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
+                    child {node [draw] {$\neq$}
+                    child {node [ellipse, draw] {NotStarted}}}
+                    child {node [draw] {StartMovement}}};
+            \end{tikzpicture}
+            \caption{The StartMovement-BT structure.}
+            \label{fig:StartMovement-BT}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
+                \node [draw] {$Root$}
+                    child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
+                    child {node [draw] {CrossingFinished}}
+                    child {node [draw] {$\neq$}
+                    child {node [ellipse, draw] {StartAlgorithm}}}};
+            \end{tikzpicture}
+            \caption{The Finished-BT structure.}
+            \label{fig:Finished-BT}
+        \end{subfigure}
+        \caption{The structures of sub-trees inside the Crossing-BT.}
+    \end{figure}
+
