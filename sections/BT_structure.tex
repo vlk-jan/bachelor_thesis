@@ -1,4 +1,4 @@
-\section{Creating a BT structure}
+\section{Creating a behavior tree structure}
     There are several possible approaches to creating a BT structure. We will present several of these approaches and state the used one. In this section, we used the insight from \cite{BT_creation}.\\
     The first approach is creating the complete BT by hand. Meaning that humans must design every node and its position and function within the structure.\\
     The second approach is creating an initial BT and letting RL algorithms improve their functionality and optimality. There are a few options for this approach.\\
@@ -15,7 +15,7 @@
         \label{fig:groot}
     \end{figure}
 
-\section{Structure hierarchy -- Main-BT}
+\section{Structure hierarchy -- Main BT}
     We will divide the whole tree structure into several sub-trees to help with readability, modularity, and maintainability.\\
     The first sub-tree will help with initialization and will be responsible for determining whether the tree should be run. It is also responsible for navigating the robot to a suitable crossing place. This sub-tree will be called \texttt{Init-BT}.\\
     The second sub-tree will be responsible for positioning the robot such that it is perpendicular to the road it is trying to cross. This sub-tree will be called \texttt{Perpendicular-BT}.\\
@@ -42,7 +42,7 @@
     The second preparation sub-tree is the \texttt{Perpendicular-BT}, its structure shown in chapter \ref{sec:Perpendicular-BT} and its implementation in chapter \ref{sec:Perpendicular-BT-impl}.\\
     The last sub-tree is the \texttt{Crossing-BT}, its structure shown in chapter \ref{sec:Crossing-BT} and its implementation in chapter \ref{sec:Crossing-BT-impl}.
 
-\section{Init-BT}
+\section{Init BT}
 \label{sec:Init-BT}
     As mentioned earlier, this BT is responsible for determining if we should start the crossing and for navigating the robot to the optimal location. This tree will be executed only once for each crossing. We accomplish this with a \texttt{SequenceStar} node as the first node after \texttt{Root}. The \texttt{Init-BT} structure is shown in figure \ref{fig:Init-BT}.\\
     \begin{figure}[ht]
@@ -69,7 +69,7 @@
     However, if such pre-mission planning was not performed, the \texttt{PlaceSuitable} condition node will check if the place is suitable. If not, the \texttt{BetterPlace} condition node will return if a better location was found. An action node \texttt{MoveToPlace} will steer the robot to a better location if it has been found. Lastly, the action node \texttt{GetBetterPlace} will try to find a better place.\\
     We will not perform the sub-tree again if a better place cannot be located. Instead, we will move on to the following sub-tree and cross the road in the position the robot is currently situated. This is done to avoid an infinite loop and is achieved with a \texttt{ReturnSuccess} node at the end of the second branch.\\
 
-\section{Perpendicular-BT}
+\section{Perpendicular BT}
 \label{sec:Perpendicular-BT}
     This sub-tree is responsible for positioning the robot for crossing in the most optimal way. We have determined that to be the one in which the robot will cross the road the fastest. As such, the position of the robot should be perpendicular to the road it is going to cross. Figure \ref{fig:Perpendicular-BT} shows the BT structure for achieving so.
     \begin{figure}[ht]
@@ -102,5 +102,5 @@
     The right branch starts with a \texttt{Repeat} node, followed by a \texttt{Sequence} node. The idea behind this branch is to utilize the azimuth value computed in the left branch and orient the robot accordingly. Firstly we need to obtain the robot's azimuth with the \texttt{GetAzimuth} action node. While this might seem redundant, we have just got the azimuth for calculation, it is vital to update the current azimuth as the value of obtained azimuth is only valid in the first run of the second branch. After receiving the current azimuth, we follow with a \texttt{Fallback} node and its first child, a condition node \texttt{RobotPerpendicular}. This node tells us if the robot has achieved the optimal azimuth we calculated earlier. If it has not, we continue, thanks to the \texttt{Fallback} node to the last part of this sub-tree. We want this part to always return \texttt{FAILURE}. This is necessary because we check the correct position before the movement. The last part is responsible for the movement of the robot. Firstly we try to rotate the robot with \texttt{RotateRobot} action node. If the rotation was unsuccessful, we tried to move the robot away from the road with \texttt{StepFromRoad}. This is implemented as the robot rotation could have brought the robot onto the road, which is forbidden.\\
     While we could unite the first two \texttt{Repeat} nodes, maybe even all three, we chose not to do so. The reason for not merging the nodes is to allow each algorithm part to fail independently. The number of repetitions for each node was set to 10, which we determined to be the optimal value.
 
-\section{Crossing-BT}
+\section{Crossing BT}
 \label{sec:Crossing-BT}

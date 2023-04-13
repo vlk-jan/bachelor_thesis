@@ -21,6 +21,12 @@
             We can use different types of loggers. The most common one is the \texttt{StdCoutLogger} which logs to the standard output. We can also use the \texttt{FileLogger}, which logs to a file.\\
             We will use the \texttt{FileLogger} to log the tree execution. This logger is useful for its integration with the \texttt{Groot} application as we can import the produced file and visualize the tree execution.\\
             The logging will be used only for debugging and testing purposes and serves no other function in the final product.
+    \subsection{Main BT}
+        In this BT we have only one non-sub-tree node.\\\\
+        \bfc{StartAlgorithm -- Condition node}\\
+        This node is responsible for determining whether the robot is in the phase of crossing the road during its mission. It is necessary to implement such a node to facilitate the transfer of control from path planning to road-crossing. In contrast, we could determine if the crossing should start based on the distance of the robot from the road. This method would fail whenever our robot needs to walk alongside any road.\\
+        This node is a ROS service updating a variable, which is checked when the node is ticked.\\
+        This service should be used mostly by other nodes outside of the package itself, with one notable exception. The exception being the very last node of the tree to prevent the tree from looping.
     \input{sections/Init_BT.tex}
     \input{sections/Perpendicular_BT.tex}
     \input{sections/Crossing_BT.tex}

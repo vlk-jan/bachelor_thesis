@@ -67,10 +67,10 @@
         \bfc{Converting NED to ENU}\\
             There are two possible orientations of an azimuth. The NED (North-East-Down) and the ENU (East-North-Up).\\
             NED means that azimuth 0 points north, and its value increases clockwise. This orientation is mainly used in cartography and everyday life.\\
-            ENU means that azimuth 0 points east, and its value increases clockwise. This orientation is mainly used in navigation and robotics, as it is consistent with REP-103.\\
+            ENU means that azimuth 0 points east, and its value increases clockwise. This orientation is mainly used in navigation and robotics, as it is consistent with REP-103\cite{REP-103}.\\
             In the entire project, we use the ENU orientation. However, as we rely on other ROS nodes to provide us with the azimuth, we need to be able to convert the azimuth from NED to ENU.\\
             The conversion should be much simpler since we do not deal with coordinates but with already computed azimuths.\\
-            The image \ref{fig:dir_indi} shows the two possible orientations of the azimuth. This image also provides us with the insight we need to determine the conversion formula. We need to divide the formula into two parts.
+            The image \ref{fig:dir_indi} shows the two possible orientations of the azimuth. This image also provides us with the insight we need to determine the conversion formula. We need to divide the formula into two parts.\\
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{images/direction_indicator.pdf}
@@ -88,12 +88,21 @@
             \end{equation}\\\\
         \bfc{Compute azimuth from coordinates}\\
             This function is used to compute the azimuth for an observer standing at the first point and looking at the second point.\\
-            We will use a slightly modified version of the formula provided here \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal\cite{Map_projections}.\\\\
+            We will use a slightly modified version of the formula provided here \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal\cite{Map_projections}.\\
+            The computation is done in the following way
+            \begin{align}
+                \Delta y &= y_{2} - y_{1}, \\
+                \alpha &= \sin{(\Delta y)}\,\cos{(x_{2})}, \\
+                \beta &= \cos{(x_{1})}\,\sin{(x_{2})} - \sin{(x_{1})}\,\cos{(x_{2})}\,\cos{(\Delta y)}, \\
+                \varphi &= \arctan{\left(\frac{\alpha}{\beta}\right)}, \\
+                \varphi &= (\varphi + 2\pi) \mod (2\pi).
+            \end{align}
+            Where $x_{1}$ and $y_{1}$ are the latitude and longitude of the first point, and $x_{2}$ and $y_{2}$ are the latitude and longitude of the second point.\\\\
         \bfc{Compute heading for robot}\\
             The use of this function is to determine the heading of the robot. It is used to get the robot perpendicular to the road.\\
             The function takes the robot's heading and the road's azimuth. The road azimuth was obtained using the function stated above.\\
-            The algorithm creates two new variables, one $+\pi$ and one $-\pi$ from the road's azimuth. This is necessary as we do not know in what order are road points stored and we do not need to differentiate the side we approach the road from.\\
-            Then it computes the difference between the robot's heading and the two new azimuths. The smallest difference is then returned.\\\\
+            The algorithm creates two new variables, one $+\frac{\pi}{2}$ and one $-\frac{\pi}{2}$ from the road's azimuth. This is necessary as we do not know in what order are road points stored and we do not need to differentiate the side we approach the road from.\\
+            Then it computes the difference between the robot's heading and the two new azimuths. The smallest difference is then returned.
     
     \subsection{Contextual information and score}
     \label{sec:context}
