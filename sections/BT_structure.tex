@@ -1,19 +1,21 @@
 \section{Creating a behavior tree structure}
-    There are several possible approaches to creating a BT structure. We will present several of these approaches and state the used one. In this section, we used the insight from \cite{BT_creation}.\\
+    There are several possible approaches to creating a BT structure. We will present a few of these approaches and state the used one. In this section, we used the insight from \cite{BT_creation}.\\
     The first approach is creating the complete BT by hand. Meaning that humans must design every node and its position and function within the structure.\\
-    The second approach is creating an initial BT and letting RL algorithms improve their functionality and optimality. There are a few options for this approach.\\
+    The second approach is creating an initial BT and letting RL algorithms improve its functionality and optimality. There are several options for this particular approach.\\
     The third possible approach is constructing the BT from previously recorded human behavior.\\
-    The last possible approach lets the RL algorithm construct the BT structure from scratch.\\\\
+    The last possible approach lets the RL algorithm construct the BT structure from scratch.\\
+    Each of the presented approaches have their advantages and disadvantages. It is therefore vital to select the correct approach based on the possibilities and requirements of the task.\\\\
     \bfc{Chosen approach}\\
-    We have chosen the first approach, meaning we will construct the whole tree structure by hand. This was done as it is the easiest approach to this task and does not require any additional steps.\\
-    Using different approaches to designing and improving the BT structure may be an interesting task for future work.\\
-    We will design the BT structure in the GUI application designed alongside our chosen BT library, Groot. The application interface is shown in figure \ref{fig:groot}.
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=\linewidth]{images/Groot.png}
-        \caption{The Groot application interface.}
-        \label{fig:groot}
-    \end{figure}
+        We have chosen the first approach, meaning we will construct the whole tree structure by hand. This was done as it is the easiest approach to this task and does not require any additional steps.\\
+        Using different approaches to designing and improving the BT structure may be an interesting task for future works.\\
+        We will design the BT structure in the GUI application designed alongside our chosen BT library, Groot. The application interface is shown in figure \ref{fig:groot}.\\\\
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=\linewidth]{images/Groot.png}
+            \caption{The Groot application interface.}
+            \label{fig:groot}
+        \end{figure}
+    
 
 \section{Structure hierarchy -- Main BT}
     We will divide the whole tree structure into several sub-trees to help with readability, modularity, and maintainability.\\
@@ -29,9 +31,9 @@
                 child {node [ellipse, draw] {StartAlgorithm}}
                 child {node [draw] {$\to^{*}$}
                 child {node [draw] {$\to^{*}$}
-                child {node [diamond, draw, aspect=2.3, xshift=0-1cm, yshift=0-0.5cm] {Init-BT}}
-                child {node [diamond, draw, aspect=2.9, yshift=0-0.5cm] {Perpendicular-BT}}}
-                child {node [diamond, draw, aspect=2.3] {Crossing-BT}}}};
+                child {node [diamond, draw, aspect=2.3, xshift=0-0.4cm, yshift=0-0.5cm] {Init}}
+                child {node [diamond, draw, aspect=2.9, yshift=0-0.5cm] {Perpendicular}}}
+                child {node [diamond, draw, aspect=2.3] {Crossing}}}};
         \end{tikzpicture}
         \caption{Main BT structure.}
         \label{fig:main-BT}
@@ -105,59 +107,74 @@
 \section{Crossing BT}
 \label{sec:Crossing-BT}
     This tree is the most important part of the whole algorithm as it facilitates the crossing of the road. Figure \ref{fig:Crossing-BT} shows the structure of the tree.\\
-    \begin{figure}[ht]
+    This tree starts in the \texttt{Sequence} node with five children. This tree also contains two further sub-trees. These sub-trees are shown in figures \ref{fig:StartMovement-BT} and \ref{fig:Finished-BT}, and will be explained separately at the end of this section.\\
+    The first branch of this tree is responsible for obtaining the data of all detected vehicles from other ROS nodes. This functionality is implemented in just one action node \texttt{GetCars}.\\
+    The second branch starts with the \texttt{Fallback} node. The first child of this node is a condition node \texttt{CarsInTrajectory}. This node checks if there are any cars in the trajectory of the robot. If there are not, we are free to continue with our movement or start it if we have not done so yet. This is performed with a sub-tree \texttt{StartCrossing}, followed by the \texttt{ContinueMovement} action node. These nodes are connected behind a \texttt{Sequence} node.\\
+    The following two branches are responsible for crossing the road if cars were detected in the robot's trajectory. The third node is the \texttt{StartCrossing} sub-tree.\\
+    The fourth branch is the decision making part of the tree. It starts with the \texttt{Sequence} node with its first child the \texttt{CalculateCollision} action node. This node is responsible for calculating the velocities for the robot to collide with all detected vehicles. These velocities are a vital information on which all the decision making is based.\\
+    The second child of the \texttt{Sequence} node is a structure of cascading if-else statements. The structure gradually checks the following conditions and based on the results perfors the corresponding actions.\\
+    The first condition is the \texttt{CollisionImminent} condition node. This node checks if the robot is about to collide with any of the detected vehicles. If it is no, the robot will continue its current movement.\\
+    It there is a collision detected we check if the collision would be on movement forward with a \texttt{CollisionFwdMove}. If not we can continue with forward movement, however the speed could change.\\
+    If the collision would be on forward movement, we check if the robot can move backwards with a \texttt{CollisionBwdMove} condition node. If it can, we move backwards with the \texttt{MoveBwd} node. If not, we use the \texttt{StopMovement} to stop the robot.\\
+    \begin{figure}[H]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
                 child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
                 child {node [draw, xshift=0-1.2cm] {GetCars}}
                 child {node [draw, xshift=0-1.5cm] {?}
-                child {node [ellipse, draw, xshift=1.5cm] {CarsInTrajectory}}
-                child {node [diamond, draw, aspect=2.3, xshift=0.9cm, yshift=0-1.5cm] {StartCrossing}}
-                child {node [draw, xshift=0.3cm] {ContinueMovement}}}
+                child {node [ellipse, draw, xshift=0.3cm] {CarsInTrajectory}}
+                child {node [draw, xshift=0.4cm] {$\to$}
+                child {node [diamond, draw, aspect=2.3, xshift=0-1.8cm, yshift=0-1.5cm] {StartCrossing}}
+                child {node [draw, xshift=0-0.75cm, yshift=0-1.5cm] {ContinueMovement}}}}
                 child {node [diamond, draw, aspect=2.3, xshift=0-1.3cm] {StartCrossing}}
-                child {node [draw, xshift=0-1.3cm] {$\to$}
-                child {node [draw, xshift=0.3cm, yshift=0-1.5cm] {CalculateCollision}}
-                child {node [draw, xshift=0-0.1cm, yshift=0-1.5cm] {?}
+                child {node [draw, xshift=0-1.4cm] {$\to$}
+                child {node [draw, xshift=0.4cm, yshift=0-1.5cm] {CalculateCollision}}
+                child {node [draw, yshift=0-1.5cm] {?}
                 child {node [draw, xshift=0-0.8cm] {$\to$}
                 child {node [ellipse, draw, xshift=0-0.3cm] {CollisionImminent}}
                 child {node [draw, xshift=0] {?}
+                child {node [draw] {$\to$}
                 child {node [ellipse, draw, xshift=0-0.2cm] {CollisionFwdMove}}
                 child {node [draw] {?}
                 child {node [draw] {$\to$}
                 child {node [ellipse, draw, xshift=0-1.2cm] {CollisionBwdMove}}
                 child {node [draw] {StopMovement}}}
-                child {node [draw, xshift=0-0.7cm] {MoveBwd}}}
+                child {node [draw, xshift=0-0.7cm] {MoveBwd}}}}
                 child {node [draw, xshift=0-0.9cm] {MoveFwd}}}}
                 child {node [draw, xshift=0-1cm] {ContinueMovement}}}}
-                child {node [diamond, draw, aspect=2.3, xshift=0-1.9cm] {Finished}}};
+                child {node [diamond, draw, aspect=2.3, xshift=0-2cm] {Finished}}};
         \end{tikzpicture}
         \caption{The Crossing-BT structure.}
         \label{fig:Crossing-BT}
     \end{figure}
 
-    \begin{figure}[ht]
-        \begin{subfigure}{0.49\textwidth}
-            \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
-                \node [draw] {$Root$}
-                    child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
-                    child {node [draw] {$\neq$}
-                    child {node [ellipse, draw] {NotStarted}}}
-                    child {node [draw] {StartMovement}}};
-            \end{tikzpicture}
-            \caption{The StartMovement-BT structure.}
-            \label{fig:StartMovement-BT}
-        \end{subfigure}
-        \begin{subfigure}{0.49\textwidth}
-            \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
-                \node [draw] {$Root$}
-                    child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
-                    child {node [draw] {CrossingFinished}}
-                    child {node [draw] {$\neq$}
-                    child {node [ellipse, draw] {StartAlgorithm}}}};
-            \end{tikzpicture}
-            \caption{The Finished-BT structure.}
-            \label{fig:Finished-BT}
-        \end{subfigure}
-        \caption{The structures of sub-trees inside the Crossing-BT.}
-    \end{figure}
-
+    \subsection{Crossing BT sub-trees}
+        \begin{figure}[ht]
+            \begin{subfigure}{0.45\textwidth}
+                \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
+                    \node [draw] {$Root$}
+                        child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
+                        child {node [draw] {$\neq$}
+                        child {node [ellipse, draw] {NotStarted}}}
+                        child {node [draw] {StartMovement}}};
+                \end{tikzpicture}
+                \caption{The StartMovement-BT structure.}
+                \label{fig:StartMovement-BT}
+            \end{subfigure}
+            \begin{subfigure}{0.54\textwidth}
+                \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]
+                    \node [draw] {$Root$}
+                        child {node [draw] {?} edge from parent [-{Stealth[length=2.5mm]}]
+                        child {node [ellipse, draw, xshift=0-0.6cm] {CrossingFinished}}
+                        child {node [draw] {$\neq$}
+                        child {node [ellipse, draw] {StartAlgorithm}}}};
+                \end{tikzpicture}
+                \caption{The Finished-BT structure.}
+                \label{fig:Finished-BT}
+            \end{subfigure}
+            \caption{The structures of sub-trees inside the Crossing-BT.}
+        \end{figure}
+        \bfc{StartMovement BT}\\
+            The \texttt{StartMovement} sub-tree is responsible for detecting if the movement process has started (the \texttt{NotStarted} condition node). If not, it starts the movement (the \texttt{StartMovement} action node).\\\\
+        \bfc{Finished BT}\\
+            The \texttt{Finished} sub-tree is responsible for detecting if the robot has the road. There are two ways we can detect if the road was crossed. The first condition node \texttt{CrossingFinished} performs the check with current gps coordinates of the robot and road data, namely its gps coordinates and width. The second check is the condition node \texttt{StartAlgorithm}, where the condition could be set from outside the algorithm, for example from a different ROS node.\\
