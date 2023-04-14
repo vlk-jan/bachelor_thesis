@@ -1,13 +1,13 @@
 \section{Creating a behavior tree structure}
     There are several possible approaches to creating a BT structure. We will present a few of these approaches and state the used one. In this section, we used the insight from \cite{BT_creation}.\\
     The first approach is creating the complete BT by hand. Meaning that humans must design every node and its position and function within the structure.\\
-    The second approach is creating an initial BT and letting RL algorithms improve its functionality and optimality. There are several options for this particular approach.\\
+    The second approach is creating an initial BT and letting RL algorithms improve their functionality and optimality. There are several options for this particular approach.\\
     The third possible approach is constructing the BT from previously recorded human behavior.\\
     The last possible approach lets the RL algorithm construct the BT structure from scratch.\\
-    Each of the presented approaches have their advantages and disadvantages. It is therefore vital to select the correct approach based on the possibilities and requirements of the task.\\\\
+    Each of the presented approaches has its advantages and disadvantages. It is, therefore, vital to select the correct approach based on the possibilities and requirements of the task.\\\\
     \bfc{Chosen approach}\\
-        We have chosen the first approach, meaning we will construct the whole tree structure by hand. This was done as it is the easiest approach to this task and does not require any additional steps.\\
-        Using different approaches to designing and improving the BT structure may be an interesting task for future works.\\
+        We have chosen the first approach, meaning we will construct the whole tree structure by hand. This was done as it is the easiest approach to this task and requires no additional steps.\\
+        Using different approaches to designing and improving the BT structure may be an interesting task for future work.\\
         We will design the BT structure in the GUI application designed alongside our chosen BT library, Groot. The application interface is shown in figure \ref{fig:groot}.\\\\
         \begin{figure}[ht]
             \centering
@@ -39,7 +39,7 @@
         \label{fig:main-BT}
     \end{figure}
     The main BT starts with a \texttt{Sequence} node. First, we need to check if the algorithm should be even started -- to avoid collision between two nodes trying to control the robot. This we achieve with a condition node \texttt{StartAlgorithm} node. This node will check if the algorithm should be started. If it should not, the algorithm will not progress. The second child is a \texttt{SequenceStar} node. This node will tick the sub-trees responsible for the whole algorithm.\\
-    However the first child is a \texttt{SequenceStar} node. This is done to ensure that each of the preparation sub-trees will be executed once (that is if they return \texttt{SUCCESS}).\\
+    However, the first child is a \texttt{SequenceStar} node. This is done to ensure that each of the preparation sub-trees will be executed once (that is, if they return \texttt{SUCCESS}).\\
     The first preparation sub-tree is the \texttt{Init-BT}, its structure shown in chapter \ref{sec:Init-BT} and its implementation in chapter \ref{sec:Init-BT-impl}.\\
     The second preparation sub-tree is the \texttt{Perpendicular-BT}, its structure shown in chapter \ref{sec:Perpendicular-BT} and its implementation in chapter \ref{sec:Perpendicular-BT-impl}.\\
     The last sub-tree is the \texttt{Crossing-BT}, its structure shown in chapter \ref{sec:Crossing-BT} and its implementation in chapter \ref{sec:Crossing-BT-impl}.
@@ -66,7 +66,7 @@
         \caption{The Init-BT structure.}
         \label{fig:Init-BT}
     \end{figure}
-    The flow for the algorithm is following. We start at a \texttt{Sequence} node. With its first child being a control node \texttt{SequenceStar} we start the \texttt{Init-BTs} first branch. The first node in this branch is an action node \texttt{GetPosition} followed by a condition node \texttt{CrossRoad}. The idea behind this branch is to determine the proximity of the robot to the road. If the robot is too far away from the road, the algorithm should not progress. This will help combat the possibility of trying to cross the wrong road, should it happen that two roads are close by.\\
+    The flow for the algorithm is the following. We start at a \texttt{Sequence} node. With its first child being a control node \texttt{SequenceStar}, we start the \texttt{Init-BTs} first branch. The first node in this branch is an action node \texttt{GetPosition} followed by a condition node \texttt{CrossRoad}. The idea behind this branch is to determine the proximity of the robot to the road. If the robot is too far away from the road, the algorithm should not progress. This will help combat the possibility of trying to cross the wrong road, should it happen that two roads are close by.\\
     The second branch of this sub-tree starts with a \texttt{Fallback} node. The idea behind this branch is to place the robot in an ideal position for crossing. This action should have been done before the mission, and the robot should have been sent to the optimal location by a path-planning node.\\
     However, if such pre-mission planning was not performed, the \texttt{PlaceSuitable} condition node will check if the place is suitable. If not, the \texttt{BetterPlace} condition node will return if a better location was found. An action node \texttt{MoveToPlace} will steer the robot to a better location if it has been found. Lastly, the action node \texttt{GetBetterPlace} will try to find a better place.\\
     We will not perform the sub-tree again if a better place cannot be located. Instead, we will move on to the following sub-tree and cross the road in the position the robot is currently situated. This is done to avoid an infinite loop and is achieved with a \texttt{ReturnSuccess} node at the end of the second branch.\\
@@ -106,16 +106,16 @@
 
 \section{Crossing BT}
 \label{sec:Crossing-BT}
-    This tree is the most important part of the whole algorithm as it facilitates the crossing of the road. Figure \ref{fig:Crossing-BT} shows the structure of the tree.\\
+    This tree is the most important part of the whole algorithm as it facilitates road crossing. Figure \ref{fig:Crossing-BT} shows the structure of the tree.\\
     This tree starts in the \texttt{Sequence} node with five children. This tree also contains two further sub-trees. These sub-trees are shown in figures \ref{fig:StartMovement-BT} and \ref{fig:Finished-BT}, and will be explained separately at the end of this section.\\
     The first branch of this tree is responsible for obtaining the data of all detected vehicles from other ROS nodes. This functionality is implemented in just one action node \texttt{GetCars}.\\
-    The second branch starts with the \texttt{Fallback} node. The first child of this node is a condition node \texttt{CarsInTrajectory}. This node checks if there are any cars in the trajectory of the robot. If there are not, we are free to continue with our movement or start it if we have not done so yet. This is performed with a sub-tree \texttt{StartCrossing}, followed by the \texttt{ContinueMovement} action node. These nodes are connected behind a \texttt{Sequence} node.\\
-    The following two branches are responsible for crossing the road if cars were detected in the robot's trajectory. The third node is the \texttt{StartCrossing} sub-tree.\\
-    The fourth branch is the decision making part of the tree. It starts with the \texttt{Sequence} node with its first child the \texttt{CalculateCollision} action node. This node is responsible for calculating the velocities for the robot to collide with all detected vehicles. These velocities are a vital information on which all the decision making is based.\\
-    The second child of the \texttt{Sequence} node is a structure of cascading if-else statements. The structure gradually checks the following conditions and based on the results perfors the corresponding actions.\\
-    The first condition is the \texttt{CollisionImminent} condition node. This node checks if the robot is about to collide with any of the detected vehicles. If it is no, the robot will continue its current movement.\\
-    It there is a collision detected we check if the collision would be on movement forward with a \texttt{CollisionFwdMove}. If not we can continue with forward movement, however the speed could change.\\
-    If the collision would be on forward movement, we check if the robot can move backwards with a \texttt{CollisionBwdMove} condition node. If it can, we move backwards with the \texttt{MoveBwd} node. If not, we use the \texttt{StopMovement} to stop the robot.\\
+    The second branch starts with the \texttt{Fallback} node. The first child of this node is a condition node \texttt{CarsInTrajectory}. This node checks if any cars are in the robot's trajectory. If there are not, we are free to continue with our movement or start it if we have not done so yet. This is performed with a sub-tree \texttt{StartCrossing}, followed by the \texttt{ContinueMovement} action node. These nodes are connected behind a \texttt{Sequence} node.\\
+    The following two branches are responsible for crossing the road if cars are detected in the robot's trajectory. The third node is the \texttt{StartCrossing} sub-tree.\\
+    The fourth branch is the decision-making part of the tree. It starts with the \texttt{Sequence} node with its first child, the \texttt{CalculateCollision} action node. This node is responsible for calculating the velocities for the robot to collide with all detected vehicles. These velocities are vital information on which all the decision-making is based.\\
+    The second child of the \texttt{Sequence} node is a structure of cascading if-else statements. The structure gradually checks the following conditions and performs the corresponding actions based on the results.\\
+    The first condition is the \texttt{CollisionImminent} condition node. This node checks if the robot is about to collide with any of the detected vehicles. If it is not, the robot will continue its current movement.\\
+    If a collision is detected, we check if the collision would be on moving forward with a \texttt{CollisionFwdMove}. If not, we can continue with the forward movement. However, the speed could change.\\
+    If the collision would be on forward movement, we check if the robot can move backward with a \texttt{CollisionBwdMove} condition node. If it can, we move backward with the \texttt{MoveBwd} node. If not, we stop the robot using the \texttt{StopMovement}.\\
     \begin{figure}[H]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
@@ -177,4 +177,4 @@
         \bfc{StartMovement BT}\\
             The \texttt{StartMovement} sub-tree is responsible for detecting if the movement process has started (the \texttt{NotStarted} condition node). If not, it starts the movement (the \texttt{StartMovement} action node).\\\\
         \bfc{Finished BT}\\
-            The \texttt{Finished} sub-tree is responsible for detecting if the robot has the road. There are two ways we can detect if the road was crossed. The first condition node \texttt{CrossingFinished} performs the check with current gps coordinates of the robot and road data, namely its gps coordinates and width. The second check is the condition node \texttt{StartAlgorithm}, where the condition could be set from outside the algorithm, for example from a different ROS node.\\
+            The \texttt{Finished} sub-tree detects if the robot has the road. There are two ways we can detect if the road was crossed. The first condition node \texttt{CrossingFinished} performs the check with the current GPS coordinates of the robot and road data, namely its GPS coordinates and width. The second check is the condition node \texttt{StartAlgorithm}, where the condition could be set from outside the algorithm, for example, from a different ROS node.\\

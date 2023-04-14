@@ -96,13 +96,13 @@
         \textbf{ReturnFailure} -- A leaf node that returns \texttt{FAILURE} once ticked. We will represent this node as an ellipse with a cross character ($\times$) inside.
 
     \subsection{Common BT structures}
-        There are some BT structures that can be explained by common programming principles. We will present a few of these structures, that we have used in our BT structure.\\\\
+        Common programming principles can explain some BT structures. We will present a few of these structures that we have used in our BT structure.\\\\
         \bfc{If-else}\\
-            The \texttt{if-else} structure starts with a \texttt{Fallback} node, and first child a \texttt{Sequence} node with its first child a condition node and second child an action node, ticked if the condition is true. The second child of the \texttt{Fallback} node is also an action node, that is performed if the condition is false.\\
+            The \texttt{if-else} structure starts with a \texttt{Fallback} node, and the first child a \texttt{Sequence} node with its first child a condition node and second child an action node, ticked if the condition is true. The second child of the \texttt{Fallback} node is also an action node that is performed if the condition is false.\\
             The structure is shown in figure \ref{fig:if-else}.\\\\
         \bfc{Condition-action}\\
             We could also name this structure as \texttt{if not}.\\
-            The \texttt{condition-action} structure starts with a \texttt{Fallback} node. Its first child is a condition node, and the second child is an action node. The idea behind this structure is we want to check if an action has been performed and if it has not, we want to perform it.\\
+            The \texttt{condition-action} structure starts with a \texttt{Fallback} node. Its first child is a condition node, and its second is an action node. The idea behind this structure is we want to check if an action has been performed, and if it has not, we want to perform it.\\
             The structure is shown in figure \ref{fig:cond-action}.\\\\
         \begin{figure}[ht]
             \begin{subfigure}{0.49\textwidth}
