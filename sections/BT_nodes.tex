@@ -22,7 +22,7 @@
             We will use the \texttt{FileLogger} to log the tree execution. This logger is useful for its integration with the \texttt{Groot} application as we can import the produced file and visualize the tree execution.\\
             The logging will be used only for debugging and testing purposes and serves no other function in the final product.
     \subsection{Main BT}
-        In this BT we have only one non-sub-tree node.\\\\
+        In this BT we have only one non-sub-tree node. This is mainly for the reason, that this tree mostly just encodes the algorithms structure, rather than having nodes for execution.\\\\
         \bfc{StartAlgorithm -- Condition node}\\
         This node is responsible for determining whether the robot is in the phase of crossing the road during its mission. It is necessary to implement such a node to facilitate the transfer of control from path planning to road-crossing. In contrast, we could determine if the crossing should start based on the distance of the robot from the road. This method would fail whenever our robot needs to walk alongside any road.\\
         This node is a ROS service updating a variable, which is checked when the node is ticked.\\

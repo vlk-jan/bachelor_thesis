@@ -14,4 +14,6 @@
         This node states whether the stored robot's location, as blackboard variable, is suitable for crossing.\\
         It uses the second return value from the ROS service called from the GetPosition node. As stated, this value takes into account the road cost for our location from the road-cost algorithm (\ref{sec:road_cost}) and the context score calculated separately before the service call.\\
         The context score is based on the contextual information that is available to us. This information may be passed from other nodes (e.g., computer vision node for detecting road parameters) or set by the operator.\\
-        The calculation of the context score and obtaining of the contextual information is described in \ref{sec:context}.
+        The calculation of the context score and the process of obtaining the contextual information is described in \ref{sec:context}.\\\\
+
+    \noindent Other nodes shown it the BT structure (fig \ref{fig:Init-BT}) are currently returning \texttt{FAILURE}. These nodes are there to show the potential for further work. Their main purpose is to steer the robot to a more optimal location for crossing. In this work, we assume that the correct location was chosen in the pre-mission planning.

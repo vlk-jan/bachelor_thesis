@@ -1,2 +1,44 @@
 \subsection{Crossing BT}
 \label{sec:Crossing-BT-impl}
+    This tree is used for the main decision-making process. It is the third sub-tree to be executed, and the only one to be executed repeatedly.\\
+    In multiple nodes we will use data about the detected vehicles, and collision parameters for each vehicle. Therefore, we first need to define the data structures used to store this information.\\\\
+    \bfc{Vehicle data}\\
+        The data structure for storing the information about the detected vehicles is defined as follows:
+        \begin{lstlisting}[language=C++, caption={Vehicle data structure}, label={lst:vehicle_data}]
+            struct vehicle_info {
+                int id;
+                double pos_x;
+                double pos_y;
+                double x_dot;
+                double y_dot;
+                double x_ddot;
+                double y_ddot;
+                double length;
+                double width;
+            };
+            struct vehicles_data {
+                int num_vehicles;
+                std::vector<vehicle_info> data;
+            };
+        \end{lstlisting}
+        The first struct \texttt{vehicle\_info} is used to store the information about single detected vehicle. The positions of the vehicles are expressed with relation to the robot frame, meaning the center of the robot is the origin of the coordinate system.\\
+        The second struct \texttt{vehicles\_data} is used to store the information about all detected vehicles.\\\\
+    \bfc{Collision data}\\
+        The data structure for storing the collision parameters is defined as follows:
+        \begin{lstlisting}[language=C++, caption={Collision data structure}, label={lst:collision_data}]
+            struct collision_info {
+                int car_id;
+                double v_front;
+                double v_back;
+                bool collide;
+            };
+            struct collisions_data {
+                int num_collisions;
+                std::vector<collision_info> data;
+            };
+        \end{lstlisting}
+        The first struct \texttt{collision\_data} is used to store the collision parameters for single vehicle.\\
+        The \texttt{v\_front} and \texttt{v\_back} variables are the velocities of the robot to come into contact with the front or back of the vehicle. The figure \ref{fig:velocities} shows the contact points we are calculating the velocities for.\\
+        The \texttt{collide} variable is a boolean value that tells us if the robot is going to collide with the vehicle. It is calculated based on the current velocities of the robot and the vehicle.\\
+        The second struct \texttt{collisions\_data} is used to store the information about all collisions.\\\\
+    \bfc{Calculating the collision parameters}
