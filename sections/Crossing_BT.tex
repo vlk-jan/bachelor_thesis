@@ -7,8 +7,8 @@
         \begin{lstlisting}[language=C++, caption={Vehicle data structure}, label={lst:vehicle_data}]
             struct vehicle_info {
                 int id;
-                double pos_x;
-                double pos_y;
+                double x_pos;
+                double y_pos;
                 double x_dot;
                 double y_dot;
                 double x_ddot;
@@ -38,7 +38,19 @@
             };
         \end{lstlisting}
         The first struct \texttt{collision\_data} is used to store the collision parameters for single vehicle.\\
-        The \texttt{v\_front} and \texttt{v\_back} variables are the velocities of the robot to come into contact with the front or back of the vehicle. The figure \ref{fig:velocities} shows the contact points we are calculating the velocities for.\\
+        The \texttt{v\_front} and \texttt{v\_back} variables are the velocities of the robot to come into contact with the front or back of the vehicle. The figure \ref{fig:collision} shows the contact points we are calculating the velocities for.\\
         The \texttt{collide} variable is a boolean value that tells us if the robot is going to collide with the vehicle. It is calculated based on the current velocities of the robot and the vehicle.\\
         The second struct \texttt{collisions\_data} is used to store the information about all collisions.\\\\
-    \bfc{Calculating the collision parameters}
+    \bfc{Calculating the collision parameters}\\
+        First we need to state the assumptions we are making in order to simplify the calculation.\\
+        The first assumption is about the coordinate system we are using. We are using the robot frame, where the center of the robot is the origin of the system and all the positions are expressed with relation to this origin. The $x$-axis is pointing forward and the $y$-axis is pointing to the left. We can make this assumption because the calculations are done periodicaly and the results are only relevant for the current time step. It also simplifies the process as the vehhicle positions are already expressed in the robot frame.\\
+        The second assumption is about the movement of the robot. We assume that the robot is moving in a straight line with constant velocity. This is reasonable as we want the robot to be as much predictable as possible, so we do not want to move the robot to the side. Assumption about the constant velocity, meaning the acceleration is zero is also reasonable. The robot's speeds are much smaller than the robot's acceleration, so we can neglect the acceleration.\\
+        The third assumption is that we will calculate the collision only in two dimensions. This is reasonable as we are only interested in the information if the collision will occur or not. The area over which the collision can occur is relatively small and therefore any terrain deviation will not have a significant impact on the collision.\\
+        The figure \ref{fig:collision} depicts a schematic view of the collision. The robot is shown in yellow and the vehicle in gray. There are shown two contact points. The first one (blue) is the point where the robot is going to collide with the front of the vehicle. The second one (red) is the point where the robot is going to collide with the back of the vehicle.\\
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[height=6cm]{images/collision.pdf}
+            \caption{Visualization of collision points, coordinate systems, and vehicle parameters.}
+            \label{fig:collision}
+        \end{figure}
+        \noindent For the first point we calculate the velocity \texttt{v\_front}. This velocity depicts the minimal speed of the robot to cross in front of the vehicle. For the second point we calculate the velocity \texttt{v\_back}. This velocity depicts the maximal speed of the robot to cross behind the vehicle.\\
