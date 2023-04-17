@@ -45,12 +45,51 @@
         First we need to state the assumptions we are making in order to simplify the calculation.\\
         The first assumption is about the coordinate system we are using. We are using the robot frame, where the center of the robot is the origin of the system and all the positions are expressed with relation to this origin. The $x$-axis is pointing forward and the $y$-axis is pointing to the left. We can make this assumption because the calculations are done periodicaly and the results are only relevant for the current time step. It also simplifies the process as the vehhicle positions are already expressed in the robot frame.\\
         The second assumption is about the movement of the robot. We assume that the robot is moving in a straight line with constant velocity. This is reasonable as we want the robot to be as much predictable as possible, so we do not want to move the robot to the side. Assumption about the constant velocity, meaning the acceleration is zero is also reasonable. The robot's speeds are much smaller than the robot's acceleration, so we can neglect the acceleration.\\
-        The third assumption is that we will calculate the collision only in two dimensions. This is reasonable as we are only interested in the information if the collision will occur or not. The area over which the collision can occur is relatively small and therefore any terrain deviation will not have a significant impact on the collision.\\
-        The figure \ref{fig:collision} depicts a schematic view of the collision. The robot is shown in yellow and the vehicle in gray. There are shown two contact points. The first one (blue) is the point where the robot is going to collide with the front of the vehicle. The second one (red) is the point where the robot is going to collide with the back of the vehicle.\\
+        The third assumption is that we will calculate the collision only in two dimensions. This is reasonable as we are only interested in the information if the collision will occur or not. Moreover, the area over which the collision can occur is relatively small and therefore any terrain deviation will not have a significant impact on the collision.\\
+        The figure \ref{fig:collision} depicts a schematic view of the collision. The robot is shown in yellow and the vehicle in gray. There are two contact points, both on the robot and the vehicle. The first one (blue) is the point where the robot is going to collide with the front of the vehicle. The second one (red) is the point where the robot is going to collide with the back of the vehicle.\\
         \begin{figure}[ht]
             \centering
             \includegraphics[height=6cm]{images/collision.pdf}
-            \caption{Visualization of collision points, coordinate systems, and vehicle parameters.}
+            \caption{Visualization of collision points, coordinate system, and vehicle parameters.}
             \label{fig:collision}
         \end{figure}
-        \noindent For the first point we calculate the velocity \texttt{v\_front}. This velocity depicts the minimal speed of the robot to cross in front of the vehicle. For the second point we calculate the velocity \texttt{v\_back}. This velocity depicts the maximal speed of the robot to cross behind the vehicle.\\
+        \noindent For the first point we calculate the velocity \texttt{v\_front}. This velocity depicts the minimal speed of the robot to cross in front of the vehicle. For the second point we calculate the velocity \texttt{v\_back}. This velocity depicts the maximal speed of the robot to cross behind the vehicle.\\\\
+        The calculation is divided into three parts. In the first part we determine the starting positions of the robot and the vehicle. In the second part we calculate the time when the vehicle will reach the intersection point $(x_{\rm{i}}, y_{\rm{i}})$. In the last part we calculate the velocities for the robot to collide with the vehicle.\\
+        The first part is neccessary as the coordinates of both the robot and the vehicle are at the center of their respective bodies. We need to move the starting points with regard to the length and width of the robot and the vehicle. The starting points for robot are calculated as follows:
+        \begin{align}
+            x_{\rm{r,f}} &= \frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
+            x_{\rm{r,b}} &= \frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
+            y_{\rm{r,f}} &= y_{\rm{r,b}} = 0,
+        \end{align}
+        where $l_{\rm{r}}$ is the length of the robot and $w_{\rm{v}}$ is the width of the vehicle.\\
+        The starting points for the vehicle are calculated as follows:
+        \begin{align}
+            x_{\rm{v,f}} &= x_{\rm{v}} + \frac{l_{\rm{v}}+w_{\rm{r}}}{2}\cos{(\varphi_{\rm{v}})},\\
+            x_{\rm{v,b}} &= x_{\rm{v}} - \frac{l_{\rm{v}}+w_{\rm{r}}}{2}\cos{(\varphi_{\rm{v}})},\\
+            y_{\rm{v,f}} &= y_{\rm{v}} + \frac{l_{\rm{v}}+w_{\rm{r}}}{2}\sin{(\varphi_{\rm{v}})},\\
+            y_{\rm{v,b}} &= y_{\rm{v}} - \frac{l_{\rm{v}}+w_{\rm{r}}}{2}\sin{(\varphi_{\rm{v}})},
+        \end{align}
+        where $\varphi_{\rm{v}} = \arctan{\left(\frac{\dot{y}_{\rm{v}}}{\dot{x}_{\rm{v}}}\right)}$ is the angle of the vehicle, $l_{\rm{v}}$ is the length of the vehicle and $w_{\rm{r}}$ is the width of the robot.\\
+        The second part of calculation is further divided into two parts. The reason is, that there are two possible scenarios for the calculation. In the first scenario the vehicles acceleration is the $y$-axis is zero. In this case the time is calculated in the following way:
+        \begin{align}
+            t_{\rm{f}} = -\frac{y_{\rm{v,f}}}{\dot{y}_{\rm{v}}},\\
+            t_{\rm{b}} = -\frac{y_{\rm{v,b}}}{\dot{y}_{\rm{v}}}.
+        \end{align}
+        In the second scenario the vehicles acceleration is the $y$-axis is non-zero. This scenario is more probable, as vehicles's rarely drive with constant speed. In this case the time is calculated in the following way:
+        \begin{align}
+            t_{\rm{f},1,2} = \frac{-\dot{y}_{\rm{v}}\pm\sqrt{\dot{y}_{\rm{v}}^2-2\ddot{y}_{\rm{v}}y_{\rm{v,f}}}}{\ddot{y}_{\rm{v}}},\\
+            t_{\rm{b},1,2} = \frac{-\dot{y}_{\rm{v}}\pm\sqrt{\dot{y}_{\rm{v}}^2-2\ddot{y}_{\rm{v}}y_{\rm{v,b}}}}{\ddot{y}_{\rm{v}}}
+        \end{align}
+        We can see that there are two possible solutions for each time. The reason is that the vehicle may be deccelerating and therefore change the direction of its travel. The interpretation of the results and the selection of the correct solution is discussed in the next section.\\
+        The last part of the calculation is the calculation of the velocities. First we need to calculate the position of the vehicle in the $x$-axis at the time of collision. We use the general equation of motion \cite{equation_motion} with $t_{0}=0\:\rm{s}$:
+        \begin{align}
+            x_{\rm{i,f}} &= x_{\rm{v,f}} + \dot{x}_{\rm{v}}t_{\rm{f}} + \frac{1}{2}\ddot{x}_{\rm{v}}t_{\rm{f}}^2,\\
+            x_{\rm{i,b}} &= x_{\rm{v,b}} + \dot{x}_{\rm{v}}t_{\rm{b}} + \frac{1}{2}\ddot{x}_{\rm{v}}t_{\rm{b}}^2.
+        \end{align}
+        Now we can calculate the velocities of the robot.
+        \begin{align}
+            \dot{x}_{\rm{r,f}} &= \frac{x_{\rm{i,f}}-x_{\rm{r,b}}}{t_{\rm{f}}},\\
+            \dot{x}_{\rm{r,b}} &= \frac{x_{\rm{i,b}}-x_{\rm{r,f}}}{t_{\rm{b}}}.
+        \end{align}
+        The calculated velocities may be positive or negative. The interpretation is explained in the following section.\\\\
+    \bfc{Interpretation of the collision parameters}
