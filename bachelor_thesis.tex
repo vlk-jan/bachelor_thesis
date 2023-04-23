@@ -14,25 +14,26 @@
 \AfterEndEnvironment{figure}{\noindent\ignorespaces}
 
 \ctusetup{
-xdoctype = B,
-xfaculty = F3,
-mainlanguage = english,
-titlelanguage = english,
-title-english = {Autonomous road crossing with a mobile robot},
-title-czech = {Autonomní přejezd silnice mobilním robotem},
-specification-file = {zadani.pdf},
-front-specification = {true},
-keywords-english = {Autonomous robot operation, behavior trees, collision avoidance, collision detection, finite-state machines, road crossing, ROS},
-keywords-czech = {Autonomní operace robota, detekce kolizí, konečné stavové automaty, přejíždění silnic, ROS, rozhodovací stromy, vyhýbání se kolizím},
-department-english = {Department of Cybernetics},
-author = {Jan Vlk},
-fieldofstudy-english = {Cybernetics and Robotics},
-fieldofstudy-czech = {Kybernetika a Robotika},
-supervisor = {Mgr. Martin Pecka, Ph.D.},
-supervisor-address = {Vision for Robotics and Autonomous Systems,\\ Resslova 9,\\ 12000 Praha 2},
-month = 6,
-year = 2023,
+    xdoctype = B,
+    xfaculty = F3,
+    mainlanguage = english,
+    titlelanguage = english,
+    title-english = {Autonomous road crossing with a mobile robot},
+    title-czech = {Autonomní přejezd silnice mobilním robotem},
+    specification-file = {zadani.pdf},
+    front-specification = {true},
+    keywords-english = {Autonomous robot operation, behavior trees, collision avoidance, collision detection, finite-state machines, road crossing, ROS},
+    keywords-czech = {Autonomní operace robota, detekce kolizí, konečné stavové automaty, přejíždění silnic, ROS, rozhodovací stromy, vyhýbání se kolizím},
+    department-english = {Department of Cybernetics},
+    author = {Jan Vlk},
+    fieldofstudy-english = {Cybernetics and Robotics},
+    fieldofstudy-czech = {Kybernetika a Robotika},
+    supervisor = {Mgr. Martin Pecka, Ph.D.},
+    supervisor-address = {Vision for Robotics and Autonomous Systems,\\ Resslova 9,\\ 12000 Praha 2},
+    month = 6,
+    year = 2023,
 }
+
 \ctuprocess
 \begin{abstract-english}
     In this thesis, our task was to design, implement and evaluate an algorithm for the safe crossing of public roads with a middle-size mobile robot.\\
@@ -69,6 +70,7 @@ year = 2023,
 
     Praha, {\selectlanguage{czech}\today}
 \end{declaration}
+
 \begin{document}
     \maketitle
 
@@ -93,7 +95,8 @@ year = 2023,
         \input{sections/BT_nodes.tex}
         \input{sections/Aux_functions.tex}
         
-    %\chapter{Simulation experiments}
+    \chapter{Simulation experiments}
+        \input{sections/Simulation.tex}
 
     %\chapter{Real-world experiments}
 
