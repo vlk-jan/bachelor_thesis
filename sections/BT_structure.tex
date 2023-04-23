@@ -120,29 +120,32 @@
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
                 child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
-                child {node [draw, xshift=0-1.2cm] {GetCars}}
-                child {node [draw, xshift=0-1.5cm] {?}
-                child {node [ellipse, draw, xshift=0.3cm] {CarsInTrajectory}}
-                child {node [draw, xshift=0.4cm] {$\to$}
-                child {node [diamond, draw, aspect=2.3, xshift=0-1.8cm, yshift=0-1.5cm] {StartCrossing}}
-                child {node [draw, xshift=0-0.75cm, yshift=0-1.5cm] {ContinueMovement}}}}
-                child {node [diamond, draw, aspect=2.3, xshift=0-1.3cm] {StartCrossing}}
-                child {node [draw, xshift=0-1.4cm] {$\to$}
-                child {node [draw, xshift=0.4cm, yshift=0-1.5cm] {CalculateCollision}}
-                child {node [draw, yshift=0-1.5cm] {?}
-                child {node [draw, xshift=0-0.8cm] {$\to$}
+                child {node [draw, xshift=0.5cm] {GetCars}}
+                child {node [draw, xshift=0.5cm] {?}
+                child {node [draw, xshift=0-0.1cm] {$\to$}
+                child {node [draw, xshift=0-1cm] {$\neq$}
+                child {node [ellipse, draw, xshift=1.4cm] {CarsInTrajectory}}}
+                child {node [diamond, draw, aspect=2.3, xshift=0-1.2cm] {StartCrossing}}
+                child {node [draw, xshift=0-1.1cm, yshift=0-1.5cm] {ContinueMovement}}}
+                child {node [draw, xshift=2.5cm] {$\to$}
+                child {node [diamond, draw, aspect=2.3, xshift=0.4cm] {StartCrossing}}
+                child {node [draw, yshift=0-1.5cm] {CalculateCollision}}
+                child {node [draw, xshift=0-0.4cm, yshift=0-1.5cm] {?}
+                child {node [draw, xshift=0-2cm, yshift=0-0.7cm] {$\to$}
                 child {node [ellipse, draw, xshift=0-0.3cm] {CollisionImminent}}
-                child {node [draw, xshift=0] {?}
+                child {node [draw] {?}
                 child {node [draw] {$\to$}
                 child {node [ellipse, draw, xshift=0-0.2cm] {CollisionFwdMove}}
                 child {node [draw] {?}
                 child {node [draw] {$\to$}
-                child {node [ellipse, draw, xshift=0-1.2cm] {CollisionBwdMove}}
-                child {node [draw] {StopMovement}}}
-                child {node [draw, xshift=0-0.7cm] {MoveBwd}}}}
+                child {node [ellipse, draw] {CollisionOnStop}}
+                child {node [draw] {$\neq$}
+                child {node [ellipse, draw] {CollisionBwdMove}}}
+                child {node [draw, xshift=0-1.1cm] {MoveBwd}}}
+                child {node [draw, xshift=0-0.7cm] {StopMovement}}}}
                 child {node [draw, xshift=0-0.9cm] {MoveFwd}}}}
-                child {node [draw, xshift=0-1cm] {ContinueMovement}}}}
-                child {node [diamond, draw, aspect=2.3, xshift=0-2cm] {Finished}}};
+                child {node [draw, xshift=0-2.15cm, yshift=0-0.7cm] {ContinueMovement}}}}}
+                child {node [diamond, draw, aspect=2.3, xshift=0.7cm] {Finished}}};
         \end{tikzpicture}
         \caption{The Crossing-BT structure.}
         \label{fig:Crossing-BT}

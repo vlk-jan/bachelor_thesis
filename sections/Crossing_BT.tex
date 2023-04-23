@@ -21,7 +21,7 @@
                 std::vector<vehicle_info> data;
             };
         \end{lstlisting}
-        The first struct \texttt{vehicle\_info} is used to store the information about single detected vehicle. The positions of the vehicles are expressed with relation to the robot frame, meaning the center of the robot is the origin of the coordinate system.\\
+        The first struct \texttt{vehicle\_info} is used to store the information about single detected vehicle. The positions of the vehicles are expressed with relation to the robot's frame, meaning the center of the robot is the origin of the coordinate system.\\
         The second struct \texttt{vehicles\_data} is used to store the information about all detected vehicles.\\\\
     \bfc{Collision data}\\
         The data structure for storing the collision parameters is defined as follows:
@@ -31,6 +31,7 @@
                 double v_front;
                 double v_back;
                 bool collide;
+                bool collide_stop;
             };
             struct collisions_data {
                 int num_collisions;
@@ -41,9 +42,18 @@
         The \texttt{v\_front} and \texttt{v\_back} variables are the velocities of the robot to come into contact with the front or back of the vehicle. The figure \ref{fig:collision} shows the contact points we are calculating the velocities for.\\
         The \texttt{collide} variable is a boolean value that tells us if the robot is going to collide with the vehicle. It is calculated based on the current velocities of the robot and the vehicle.\\
         The second struct \texttt{collisions\_data} is used to store the information about all collisions.\\\\
+    \bfc{Used units}\\
+        We use these units for the measured and calculated parameters:
+        \begin{itemize}
+            \item \textbf{Position} -- meters $[\rm{m}]$
+            \item \textbf{Time} -- seconds $[\rm{s}]$
+            \item \textbf{Velocity} -- meters per second $[\rm{m\,s^{-1}}]$
+            \item \textbf{Acceleration} -- meters per second squared $[\rm{m\,s^{-2}}]$
+            \item \textbf{Dimensions} -- meters $[\rm{m}]$
+        \end{itemize}
     \bfc{Calculating the collision parameters}\\
         First, we need to state the assumptions we are making in order to simplify the calculation.\\
-        The first assumption is about the coordinate system we are using. We are using the robot frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the left. We can assume this because the calculations are done periodically, and the results are only relevant for the current time step. It also simplifies the process, as the vehicle positions are already expressed in the robot frame.\\
+        The first assumption is about the coordinate system we are using. We are using the robot's frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the left. We can assume this because the calculations are done periodically, and the results are only relevant for the current time step. It also simplifies the process, as the vehicle positions are already expressed in the robot frame.\\
         The second assumption is about the movement of the robot. We assume the robot is moving in a straight line with constant velocity. This is reasonable as we want the robot to be as predictable as possible, so we do not want to move the robot to the side. The assumption about the constant velocity, meaning the acceleration is zero, is also reasonable. The speeds the robot can achieve are much lower than the robot's acceleration, so that we can neglect the acceleration.\\
         The third assumprion is about the movement of the vehicle. We assume the vehicle's acceleration is constant. This is a reasonable simplification as the calculation is done periodically.\\
         The fourth assumption is that we will calculate the collision only in two dimensions. This is reasonable as we are only interested in the information if the collision will occur or not. Moreover, the area over which the collision can occur is relatively small, and therefore, any terrain deviation will not significantly impact the collision.\\\\
@@ -59,7 +69,7 @@
         The first part is necessary as the coordinates of both the robot and the vehicle are at the center of their respective bodies. We need to move the starting points concerning the robot's and vehicle's length and width. The starting points for the robot are calculated using these equations:
         \begin{align}
             x_{\rm{r,f}} &= \frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
-            x_{\rm{r,b}} &= \frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
+            x_{\rm{r,b}} &= -\frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
             y_{\rm{r,f}} &= y_{\rm{r,b}} = 0,
         \end{align}
         where $l_{\rm{r}}$ is the length of the robot and $w_{\rm{v}}$ is the width of the vehicle.\\
@@ -73,7 +83,7 @@
         where $\varphi_{\rm{v}} = \arctan{\left(\frac{\dot{y}_{\rm{v}}}{\dot{x}_{\rm{v}}}\right)}$ is the angle of the vehicle, $l_{\rm{v}}$ is the length of the vehicle and $w_{\rm{r}}$ is the width of the robot.\\
         We put the width of the robot to the calculation of the vehicle's starting points and vice versa because we want to flatten the dimensions of the objects. This is done to simplify the calculation of the intersection point of the robot's and vehicle's trajectory.\\
         The second part of the calculation is further divided into two parts. The reason is, that there are two possible scenarios for the calculation. We will use the general equation of motion \cite{equation_motion} for both calculations.\\
-        In the first scenario, the vehicle's acceleration is the $y$-axis is zero. That means we can calculate the time using the following equations:
+        In the first scenario, the vehicle's acceleration in the $y$-axis is zero. That means we can calculate the time using the following equations:
         \begin{align}
             t_{\rm{f}} = -\frac{y_{\rm{v,f}}}{\dot{y}_{\rm{v}}},\\
             t_{\rm{b}} = -\frac{y_{\rm{v,b}}}{\dot{y}_{\rm{v}}}.
@@ -99,10 +109,11 @@
         We will divide this section into two parts. The first part is the interpretation of the calculated time. The second part is the interpretation of the calculated velocities.\\\\
         If the calculated time is positive, the intersection point of the robot's and vehicle's trajectory is in the future. This means that the robot can collide with the vehicle without either of them changing the direction of travel.\\
         If the calculated time is negative, it means that the intersection point of the robot's and vehicle's trajectory is in the past. This means that the robot can collide with the vehicle, but only if the vehicle or the robot changes the direction of travel.\\
-        The time can also be zero. This means that the robot and vehicle already collided. Therefore, we do not expect such a result to arise.\\
+        The time can also be zero. This means that the robot and vehicle already collided. Therefore, we do not expect such time to arise as a result of the calculation.\\
         We may have up to two solutions when calculating the times for non-zero acceleration. If we have none, the robot's and the vehicle's trajectories do not intersect.\\
         If we have one solution, the robot's and the vehicle's trajectories intersect only once. The interpretation is that the vehicle is decelerating and will stop at the intersection point and then start reversing.\\
-        If we have two solutions, the robot's and the vehicle's trajectories intersect multiple times. Multiple intersections could have several physical interpretations. We can interpret this as the vehicle decelerating, and therefore, changing the direction of travel after passing the intersection point. We can also interpret this as the vehicle accelerating, and therefore, the second time of the intersection is likely negative.\\
+        If we have two solutions, the robot's and the vehicle's trajectories intersect two times. Multiple intersections could have several physical interpretations. We can interpret this as the vehicle decelerating, and therefore, changing the direction of travel after passing the intersection point. We can also interpret this as the vehicle accelerating, and therefore, the second time of the intersection is likely negative.\\
         When choosing the calculated time, we will use the following criteria. If one time is positive and the second is negative, we will use the positive time. If both times are positive, we will use the shorter time. If both times are negative, we will use the larger time (the time that is closer to the present).\\\\
         The velocities can also be positive or negative. The interpretation is similar to the one of time. Positive velocity means moving forward, while negative velocity means moving backward.\\
-        While it may seem irrelevant to calculate the time and velocity for backward movement, it is essential. The reason is that some other vehicle in front of the robot may be moving so that the robot collides with it. In this case, the robot will have to move backward to avoid the collision, and we need to be able to set the correct backward velocity to not collide with the first vehicle.
+        While it may seem irrelevant to calculate the time and velocity for backward movement, it is essential. The reason is that some other vehicle may be moving so that the robot would collide with it. In that case, the robot will have to move backward to avoid the collision, and we need to be able to set the correct backward velocity to not collide with the first vehicle.\\\\
+    \bfc{GetCars -- action node}
