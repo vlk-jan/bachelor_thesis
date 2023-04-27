@@ -63,8 +63,9 @@
         Here we will present the functions used for geographical calculations. These include conversions between coordinate systems, calculating azimuths, and others.\\\\
         \bfc{Converting GPS to UTM}\\
             While most geographical data are stored in the WGS84 coordinate system, the UTM coordinate system is more suitable for calculations. We, therefore, need to convert the GPS coordinates to UTM.\\
-            We use the GeographicLib library for this purpose. The function from this library that we use is \texttt{GeographicLib::UTMUPS::Forward}. This function takes the point's latitude and longitude and returns the point's easting and northing in the UTM coordinate system. It also returns the zone number and whether the point is in the northern or southern hemisphere.\\
-            While the input variables are passed by value, the return variables are passed to the function call by reference.\\\\
+            When working with geographical conversions in \CC, we use the library GeographicLib. The function from this library that does the conversion is \texttt{GeographicLib::UTMUPS::Forward}. This function takes the point's latitude and longitude and returns the point's easting and northing in the UTM coordinate system. It also returns the zone number and whether the point is in the northern or southern hemisphere.\\
+            While the input variables are passed by value, the return variables are passed to the function call by reference.\\
+            When converting the geographical data we in Python we use the \texttt{utm} library. The function facilitating the conversion from WGS84 to UTM is \texttt{utm.from\_latlon}.\\\\
         \bfc{Converting NED to ENU}\\
             There are two possible orientations of an azimuth. The NED (North-East-Down) and the ENU (East-North-Up).\\
             NED means that azimuth 0 points north, and its value increases clockwise. This orientation is mainly used in cartography and everyday life.\\
