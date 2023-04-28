@@ -45,11 +45,11 @@
     \bfc{Used units}\\
         We use these units for the measured and calculated parameters:
         \begin{itemize}
-            \item \textbf{Position} -- meters $[\rm{m}]$
-            \item \textbf{Time} -- seconds $[\rm{s}]$
-            \item \textbf{Velocity} -- meters per second $[\rm{m\,s^{-1}}]$
-            \item \textbf{Acceleration} -- meters per second squared $[\rm{m\,s^{-2}}]$
-            \item \textbf{Dimensions} -- meters $[\rm{m}]$
+            \item \textbf{Position} -- meters $[\si{\m}]$
+            \item \textbf{Time} -- seconds $[\si{\s}]$
+            \item \textbf{Velocity} -- meters per second $[\si{\m\per\s}]$
+            \item \textbf{Acceleration} -- meters per second squared $[\si{\m\per\square\s}]$
+            \item \textbf{Dimensions} -- meters $[\si{\m}]$
         \end{itemize}
     \bfc{Calculating the collision parameters}\\
         First, we need to state the assumptions we are making in order to simplify the calculation.\\
@@ -117,4 +117,34 @@
         When choosing the calculated time, we will use the following criteria. If one time is positive and the second is negative, we will use the positive time. If both times are positive, we will use the shorter time. If both times are negative, we will use the larger time (the time that is closer to the present).\\\\
         The velocities can also be positive or negative. The interpretation is similar to the one of time. Positive velocity means moving forward, while negative velocity means moving backward.\\
         While it may seem irrelevant to calculate the time and velocity for backward movement, it is essential. The reason is that some other vehicle may be moving so that the robot would collide with it. In that case, the robot will have to move backward to avoid the collision, and we need to be able to set the correct backward velocity to not collide with the first vehicle.\\\\
-    \bfc{GetCars -- action node}
+    \bfc{GetCars -- action node}\\
+        The action node \texttt{GetCars} is responsible for obtaining information about the detected vehicles. The detection node was not yet implemented when this thesis was written. Therefore, we will use the \texttt{GetCars} node to simulate the detection of vehicles.\\
+        We will subscripe to the topic \texttt{/road\_crossing/injector}. To this topic we will publish from a separate node designed solely for the purpose of simulation the detection node.\\
+        The information about the detected vehicles will be stored in a static variable for later use. The variable is of the format shown in listing \ref{lst:vehicle_data}.\\\\
+    \bfc{CarsInTrajectory -- condition node}\\
+        This node is important for optimizing the flow of ticks in our behavior tree. The node is responsible for checking if there are any detected vehicles. If there are no vehicles we do not need to go through the calculation and decision making. This speeds up the completion of this run of the BT and allows us to start the next run sooner.\\\\
+    \bfc{NotStarted -- condition node}\\
+        This node is responsible for checking if the movement across the road has been started. If it has not, we need to start the movement. If it has, we may continue in it.\\\\
+    \bfc{StartMovement -- action node}\\
+        This node is responsible for starting the movement across the road. We will set the maximal forward linear velocity to the topic our inner static variable. This variable is responsible for storing the current velocity. We chose the maximal linear velocity as $1.2\:\si{\m\per\s}$.\\\\
+    \bfc{MoveFwdFull -- action node}\\
+        This node is used when no vehicles are detected and therefore we want to move the robot across the road as fast as possible. We publish the maximal forward linear velocity to the topic \texttt{/cmd\_vel}.\\\\
+    \bfc{CalculateCollision -- action node}\\
+        In this node we will calculate the collision parameters. We will use the formulas described earlier. The results will be stored in the inner static variables.\\
+        This node will run the calculation for each vehicle independently. As each vehicle has its own ID, we will use this ID to differentiate between the vehicles. This ID will also be used to delete all the results from the inner static variable when the vehicle is no longer detected.\\\\
+    \bfc{MoveFwd -- action node}\\
+        This node is used when there are detected vehicles and a forward movement is possible. We will publish the forward velocity to the topic \texttt{/cmd\_vel}. The forward velocity is determined from the calculated velocities from the \texttt{CalculateCollision} node. We will set the maximal forward velocity we can, while still avoiding the collision.\\\\
+    \bfc{MoveBwd -- action node}\\
+        This node is used when there are detected vehicles and a backward movement is necessary. We will publish the backward velocity to the topic \texttt{/cmd\_vel}. The backward velocity is determined from the calculated velocities from the \texttt{CalculateCollision} node. We will set the minimal backward velocity we can, while still avoiding the collision.\\\\
+    \bfc{StopMovement -- action node}\\
+        This node is used when there is no possible movement forward without the robot colliding with a vehicle and movement back is not neccessary. We will stop the robot by publishing zero velocity to the topic \texttt{/cmd\_vel}.\\\\
+    \bfc{CollisionFwdMove -- condition node}\\
+        This node is used to determine whether there are vehicles in front of the robot in such a position and velocity that the robot would collide with them if it moved forward.\\\\
+    \bfc{CollisionBwdMove -- condition node}\\
+        This node is used to determine whether there are vehicles in such a position and velocity that the robot would collide with them if it moved backward.\\\\
+    \bfc{CollisionOnStop -- condition node}\\
+        This node is used to determine whether there are vehicles in such a position and velocity that the robot would collide with them if it stopped.\\\\
+    \bfc{CrossingFinished -- condition node}\\
+        In this node we check the current position of the robot with. If the distance of the current position from the middle of the road is greater then the half of the width of the road, we consider the crossing finished.\\
+        Other condition for finishing the crossing is if the robot's distance from the starting point is greater than the width of the road.\\
+        It is beneficiary to have both of these conditions as the position of the robot may be imprecise.\\\\

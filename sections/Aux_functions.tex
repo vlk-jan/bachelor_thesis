@@ -35,7 +35,7 @@
                 \caption{Representation of certain TPI classes.}
                 \label{fig:TPI}
             \end{subfigure}
-            \caption{Visualization of key elements in road cost algorithm.}
+            \caption{Visualization of key elements in the road cost algorithm.}
         \end{figure}
 
         \bfc{Usage}\\
@@ -90,7 +90,7 @@
             \end{equation}\\\\
         \bfc{Compute azimuth from coordinates}\\
             This function is used to compute the azimuth for an observer standing at the first point and looking at the second point.\\
-            We will use a slightly modified version of the formula provided here \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal\cite{Map_projections}. In testing the difference between calculated azimuths using the WGS84 and UTM coordinates was around $\Delta\varphi=0.097\:\rm{rad}$ or $\Delta\varphi=5.541\rm{^{\circ}}$.\\
+            We will use a slightly modified version of the formula provided here \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal\cite{Map_projections}. In testing the difference between calculated azimuths using the WGS84 and UTM coordinates was around $\Delta\varphi=0.097\:\si{\radian}$ or $\Delta\varphi=5.541\si{\degree}$.\\
             The computation equations are as follows
             \begin{align}
                 \Delta y &= y_{2} - y_{1}, \\
