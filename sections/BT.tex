@@ -1,14 +1,14 @@
 \section{Behavior trees}
-    A behavior tree (BT) is a way to structure algorithms -- the switching between individual tasks in an autonomous agent. It was created to express behavior patterns for NPCs (non-playable characters) in computer games. Since then, it has found many more applications, and nowadays, it is also widely used in robotics and AI applications.\\
+    A behavior tree (BT) is a way to structure algorithms -- the switching between individual tasks in an autonomous agent. It was created to express behavior patterns for NPCs (non-player characters) in computer games. Since then, it has found many more applications, and nowadays, it is also widely used in robotics and AI applications.\\
     BTs, as the name suggests, are tree-like structures where each node represents an action, a condition, a control, or a decorator node. Action and control nodes are leaves of the tree structure. Control nodes are used to control and modify the flow of the tree. Examples of these nodes are \texttt{sequence}, \texttt{fallback}, or \texttt{repeat}. Decorator nodes are used to modify the return values, thus modifying the behavior of its children. Examples of these nodes are \texttt{force-success}, \texttt{force-failure}, or \texttt{inverter}.\\
-    The execution of a BT commences at the root node and then progressively traverses the tree structure in a depth-first fashion polling its nodes. The nodes' polling, more frequently called the ticking, is periodically repeated. Each node, once ticked, begins its execution process, and once finished, it returns a status. This status can be either \texttt{SUCCESS}, \texttt{FAILURE}, or \texttt{RUNNING}. The action and control nodes are responsible for determining and returning these states. The control nodes alter the tree's flow and tick handling based on its children's return states. Decorator nodes modify the return states of their children. The return status of some nodes is shown in table \ref{tab:returns}.
+    The execution of a BT commences at the root node and then progressively traverses the tree structure in a depth-first fashion polling its nodes. The nodes' polling, more frequently called the ticking, is periodically repeated. Each node, once ticked, begins its execution process, and once finished, it returns a status. This status can be either \texttt{SUCCESS}, \texttt{FAILURE}, or \texttt{RUNNING}. The action and control nodes are responsible for determining and returning these states. The control nodes alter the tree's flow and tick handling based on its children's return states. Decorator nodes modify the return states of their children. The return states of some nodes are shown in table \ref{tab:returns}.
     \begin{table}[H]
         \centering
         \begin{tabular}{|l|l|l|l|}
             \hline
             Node type & \texttt{SUCCESS} & \texttt{FAILURE} & \texttt{RUNNING} \\
             \hline\hline
-            \texttt{Action} & Succesful completion & Unable to complete & During completion \\
+            \texttt{Action} & Action succeeds & Unable to complete & During completion \\
             \hline
             \texttt{Condition} & Condition is true & Condition is false & N/A \\
             \hline
@@ -16,7 +16,7 @@
             \hline
             \texttt{Fallback} & One child succeeds & All children fail & One child running \\
             \hline
-            \texttt{Parallel} & $N$ children succeed & $<N$ children succeed & All children running \\
+            \texttt{Parallel} & $N$ children succeed & $<N$ children succeed & Children running \\
             \hline
             \texttt{Repeat} & Child succeeds & Child fails $x$ times & Child running \\
             \hline
@@ -25,7 +25,7 @@
         \label{tab:returns}
     \end{table}
 
-    A more thorough explanation of the behavior trees can be found in the first chapter in \cite{BT_intro}.
+    The first chapter in \cite{BT_intro} provides a more thorough explanation of the behavior trees.
 
     \subsection{Commonly used nodes}
         Here we will present the most commonly used nodes and their functionality.\\\\
@@ -39,7 +39,7 @@
 
     \subsection{Graphical representation of BTs}
         We will represent the BTs in this work in the following way. Action nodes will be rectangular with the name of the action written inside. Control nodes will be elliptical with the name of the condition written inside. Control and decorator nodes will be rectangular with a corresponding symbol inside. The symbols are shown in a table \ref{tab:symbols}.\\
-        If the BT has a sub-tree in its structure, we will represent it as a diamond shape node with the sub-tree name written inside.
+        If the BT has a sub-tree in its structure, we will represent it as a diamond-shaped node with the sub-tree name written inside.
         \begin{table}[H]
             \centering
             \begin{tabular}{|l|l|c|}
@@ -71,7 +71,7 @@
     
     \subsection{BT example}
         We will present a simple example demonstrating the BTs structure and design principles.\\
-        The example BT is shown in figure \ref{fig:example_tree}. This BT was created in the algorithm design's beginning phase, and its modified version will be presented later as it is used in the final implementation. The goal of this sub-tree was to position the robot so that it would cross the road as fast as possible, meaning we wanted the robot to stand perpendicular to the road.
+        The example BT is shown in figure \ref{fig:example_tree}. This BT was created in the algorithm design's beginning phase, and its modified version will be presented later as it is used in the final implementation. The goal of this sub-tree was to position the robot so that it would cross the road as fast as possible, meaning we want the robot to stand perpendicular to the road.
         \begin{figure}[H]
             \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
                 \node [draw] {$Root$}
@@ -87,11 +87,11 @@
             \caption{BT example.}
             \label{fig:example_tree}
         \end{figure}
-        We start in the root node and continue straight to the \texttt{sequence} node. From there, we go to the action node GetAzimuth, which gives us the current heading of the robot. If the execution of the GetAzimuth node is successful, we continue to the Heading sub-tree node. This sub-tree aims to calculate the heading the robot needs to achieve in order to be perpendicular. If all nodes inside the sub-tree are successful, we continue to the \texttt{repeat} node. This node will repeat its children ten times (or less if success is achieved sooner). The first child we will tick is a \texttt{fallback} node, with its first child being a condition node RobotPerpendicular. The condition node return value states whether or not the robot is already perpendicular to the road, we mean to cross. If we are not yet perpendicular, we continue. The next node we tick is a \texttt{force-failure} node with a sub-tree node as its child. The sub-tree is responsible for rotating the robot to the desired heading.
+        We start in the root node and continue straight to the \texttt{sequence} node. From there, we go to the action node GetAzimuth, which gives us the current heading of the robot. If the execution of the GetAzimuth node is successful, we continue to the Heading sub-tree node. This sub-tree aims to calculate the heading the robot needs to achieve in order to be perpendicular. If all nodes inside the sub-tree are successful, we continue to the \texttt{repeat} node. This node will repeat its children ten times (or less if success is achieved sooner). The first child we will tick is a \texttt{fallback} node, with its first child being a condition node RobotPerpendicular. The condition node return value states whether or not the robot is already perpendicular to the road we mean to cross. If we are not yet perpendicular, we continue. The next node we tick is a \texttt{force-failure} node with a sub-tree node as its child. The sub-tree is responsible for rotating the robot to the desired heading.
 
-    \subsection{Other BT nodes}
-        Here we will present other BT nodes. These nodes are an expansion on the common ones and are implementation specific.\\\\
-        \textbf{SequenceStar} ($\to^{*}$) -- Also know as \texttt{SequenceWithMemory}, a control node that functions in the same way as \texttt{Sequence}. The only difference is that this node does not repeat children that returned \texttt{SUCCESS} until all children have. Meaning until the \texttt{SequenceStar} node return \texttt{SUCCESS} it will tick only the children that have not succeeded yet.\\\\
+    \subsection{Other used BT nodes}
+        Here we will present other BT nodes. These nodes are an expansion of the common ones and are implementation specific.\\\\
+        \textbf{SequenceStar} ($\to^{*}$) -- Also know as \texttt{SequenceWithMemory}, a control node that functions in the same way as \texttt{Sequence}. The only difference is that this node does not repeat children that returned \texttt{SUCCESS} until all children have. Meaning until the \texttt{SequenceStar} node returns \texttt{SUCCESS}, it will tick only the children that have not succeeded yet.\\\\
         \textbf{ReturnSuccess} -- A leaf node that returns \texttt{SUCCESS} once ticked. We will represent this node as an ellipse with a checkmark character ($\checkmark$) inside.\\\\
         \textbf{ReturnFailure} -- A leaf node that returns \texttt{FAILURE} once ticked. We will represent this node as an ellipse with a cross character ($\times$) inside.
 
@@ -102,7 +102,7 @@
             The structure is shown in figure \ref{fig:if-else}.\\\\
         \bfc{Condition-action}\\
             We could also name this structure as \texttt{if not}.\\
-            The \texttt{condition-action} structure starts with a \texttt{Fallback} node. Its first child is a condition node, and its second is an action node. The idea behind this structure is we want to check if an action has been performed, and if it has not, we want to perform it.\\
+            The \texttt{condition-action} structure starts with a \texttt{Fallback} node. Its first child is a condition node, and its second is an action node. The idea behind this structure is to check if an action has been performed, and if it has not, we want to perform it.\\
             The structure is shown in figure \ref{fig:cond-action}.\\\\
         \begin{figure}[ht]
             \begin{subfigure}{0.49\textwidth}

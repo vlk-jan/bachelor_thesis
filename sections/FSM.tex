@@ -1,10 +1,10 @@
 \section{Finite-state machines}
     Finite-state machines (FSM) are a mathematical model of computation. They are used to model the behavior of a system in a finite number of pre-defined states. The system can be in only one state at a time. In each state, a computation or an action is performed. The change of a state is possible only via predetermined transitions triggered by a condition.\\
     FSMs are a common method of describing and solving high-level sequential control problems. They are used in many fields, such as robotics, computer science, electrical engineering, etc.\\
-    FSM offers a very effective method in the implementation of complex robot behavior in comparison to monolithic programming.\cite{FSM_safety} Moreover, the learning curve for using FSM is minor; it is quite likely the reader already knows about FSMs from math or logic courses. Secondly, the integration itself is almost painless, especially when one takes the FSM into account from early stages of the design.\cite{FSM_intro}\\
-    However, the FSMs are unsuitable for large and complex systems as they tend to become unmanageable and difficult to extend and reuse. This becomes more evident for a fully reactive system, where each state must be able to transition to any other state. Such a condition imposes the FSM to become a fully connected graph ($\mathcal{O}(n^2)$). Maintaining and modifying such a graph is quite a labor-intensive and error-prone task.\\
+    FSM offers a very effective method in the implementation of complex robot behavior in comparison to monolithic programming.\cite{FSM_safety} Moreover, the learning curve for using FSM is minor; it is quite likely the reader already knows about FSMs from math or logic courses. Secondly, the integration itself is almost painless, especially when one takes the FSM into account from the early stages of the design.\cite{FSM_intro}\\
+    However, the FSMs are unsuitable for large and complex systems as they tend to become unmanageable and difficult to extend and reuse. The unsuitability becomes more evident for a fully reactive system, where each state must be able to transition to any other state. Such a condition imposes the FSM to become a fully connected graph ($\mathcal{O}(n^2)$). Maintaining and modifying such a graph is quite a labor-intensive and error-prone task.\\
     FSMs are also unsuitable for systems requiring a high degree of autonomy. The FSMs are not able to learn and adapt to the changing environment.\\
-    The formal definition of a FSM and several examples can be found in \cite{FSM_intro}.
+    The formal definition of an FSM and several examples can be found in \cite{FSM_intro}.
 
     \subsection{FSM example}
         Here we will show the FSM for the example BT (figure \ref{fig:example_tree}) from the previous section.
@@ -30,7 +30,7 @@
             \caption{FSM for the example BT.}
             \label{fig:example_fsm}
         \end{figure}
-        This is not a typical representation of a FSM. It is a one to one rewrite of the BT example. If we were to develop the algorithm using FSMs, the FSM would look different. BTs and FSMs require different mindsets and design principles and while they may be rewritten from one to the other, it usually results in a nonoptimal structure.
+        This is not a typical representation of an FSM. It is a one-to-one rewrite of the BT example. If we were to develop the algorithm using FSMs, the FSM would look different. BTs and FSMs require different mindsets and design principles, and while they may be transformed from one to the other, it usually results in a nonoptimal structure.
 
 \section{Hierarchical FSMs}
     Hierarchical state machines (HFSM), also known as statecharts, were developed to alleviate the cumbersome transition duplication required in large FSMs and add structure to aid comprehension of complex systems. It clusters states into a group (named superstate) where all the underlying internal states (substates) implicitly share the same superstate.\cite{BT_driving}\\
