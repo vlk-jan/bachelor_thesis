@@ -1,6 +1,6 @@
 \subsection{Perpendicular BT}
 \label{sec:Perpendicular-BT-impl}
-    This tree is used to position the robot perpendicular to the road. It is the second sub-tree to be executed, and as well as Init BT, it is used to prepare the robot for the crossing.\\\\
+    The task of this tree is to position the robot perpendicular to the road. It is the second sub-tree to be executed, and as well as Init BT, it is used to prepare the robot for the crossing and is only executed once.\\\\
     \bfc{GetAzimuth -- action node}\\
         This node is responsible for obtaining the robot's current azimuth. We have a ROS subscriber listening to topic published by \texttt{compass} node\footnote{\url{https://github.com/ctu-vras/compass}}.\\
         The compass node may publish the azimuth in several different formats. In our program, we use the ENU format in radians. But if the compass node publishes the azimuth in a different format, we have subscribers that can convert it to the desired format.\\
@@ -11,14 +11,14 @@
         We then calculate the heading of the road segment using the function defined in this section \ref{sec:geo_func}.\\
         The calculated road heading is then stored as a blackboard variable \texttt{road\_heading}.\\\\
     \bfc{ComputeHeading -- action node}\\
-        This node uses the blackboard variable \texttt{azimuth} and \texttt{road\_heading} to calculate the azimuth the robot should achieve to be perpendicular to the road.\\
+        This node uses the blackboard variable \texttt{azimuth} and \texttt{road\_heading} to calculate the heading the robot should achieve to be perpendicular to the road.\\
         The calculation is defined in section \ref{sec:geo_func}.\\
         The result is stored as a blackboard variable \texttt{req\_azimuth}.\\\\
     \bfc{RobotPerpendicular -- condition node}\\
-        This node checks if the robot is perpendicular to the road. It works by comparing the current azimuth with the required azimuth. Both of these values are stored on the blackboard.\\
+        This node checks if the robot is perpendicular to the road. It works by comparing the current azimuth with the required heading. Both of these values are stored in the blackboard.\\
         We use the function defined in section \ref{sec:math_func} to compare the values to calculate the difference between two angles. The result is then compared to the threshold value, which is set to $0.1745\:\rm{rad}$ or $10\rm{^{\circ}}$.\\\\
     \bfc{RotateRobot -- action node}\\
-        This node rotates the robot to the required azimuth.\\
+        This node rotates the robot to the required heading.\\
         First, we calculate the difference between the robot's current and desired azimuth. Then, based on the difference, we proportionally set the rotation direction and speed.\\
         The calculated movement is then published to the \texttt{cmd\_vel} topic.\\\\
     \bfc{StepFromRoad -- action node}\\

@@ -16,7 +16,7 @@
         \bfc{GetSuitability}\\
             This service is used to determine if the position of the robot is valid and suitable for crossing the road.\\
             The service call takes the geographical position of the robot in the UTM format and the contextual score. It finds the closest road segment from the road cost algorithm results. If the distance to any road segments is greater than 10 meters, the position is deemed invalid for crossing, and such is returned.\\
-            If the position is valid, it then calculates the final cost score based on the road and contextual scores. If the final score is below the threshold, the position is deemed unsuitable for crossing. The threshold is set to 20.\\
+            If the position is valid, it then calculates the final cost score based on the road and contextual scores. If the final score is below the threshold, the position is deemed unsuitable for crossing. The threshold is set to 20.\\\\
         \bfc{StartAlgorithm}\\
             This service is used to start and end the crossing algorithm. This service is intended to be used from the outside of the algorithm.\\
             The call takes two boolean values, start and stop. Only one is permitted to be set as true. Otherwise, a warning is printed.

@@ -1,0 +1,33 @@
+\chapter{Code snippets}
+\label{app:code}
+    \begin{lstlisting}[language=C++, caption={Vehicle data structure}, label={lst:vehicle_data}]
+            struct vehicle_info {
+                int id;
+                double x_pos;
+                double y_pos;
+                double x_dot;
+                double y_dot;
+                double x_ddot;
+                double y_ddot;
+                double length;
+                double width;
+            };
+            struct vehicles_data {
+                int num_vehicles;
+                std::vector<vehicle_info> data;
+            };
+        \end{lstlisting}
+
+        \begin{lstlisting}[language=C++, caption={Collision data structure}, label={lst:collision_data}]
+            struct collision_info {
+                int car_id;
+                double v_front;
+                double v_back;
+                bool collide;
+                bool collide_stop;
+            };
+            struct collisions_data {
+                int num_collisions;
+                std::vector<collision_info> data;
+            };
+        \end{lstlisting}

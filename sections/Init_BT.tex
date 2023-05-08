@@ -1,18 +1,17 @@
 \subsection{Init BT}
 \label{sec:Init-BT-impl}
-    Here we will present the nodes used in the Init sub-tree. This sub-tree is used to initialize the BT algorithm. It is the first sub-tree to be executed.\\
-    This tree is going to be executed only once per road to cross. We will achieve this by using the \texttt{SequenceStar} node as the root of this sub-tree.\\\\
+    Here we will present the nodes used in the Init sub-tree. This sub-tree is used to initialize the BT algorithm. It is the first sub-tree to be executed. This tree is going to be executed only once per road crossing.\\\\
     \bfc{GetPosition -- Action node}\\
-        This node is responsible for obtaining the current GPS position of the robot and converting it to the UTM coordinate system. It is implemented as a ROS topic subscriber. The topic subscribed is \texttt{fix/} where the GPS data are being published.\\
+        This node is responsible for obtaining the current GPS position of the robot and converting it to the UTM coordinate system. It is implemented as a ROS topic subscriber. The topic subscribed is \texttt{/gps/fix} where the GPS data are being published.\\
         The obtained data are then converted to UTM using the \texttt{gps\_to\_utm} function defined in \ref{sec:geo_func}. The result is then stored as two BT blackboard variables -- \texttt{easting} and \texttt{northing}.\\
-        For each of the obtained values, it also calls a ROS service \texttt{place\_suitability} to determine the suitability of the crossing place.\\\\
+        For every obtained value, it also calls a ROS service \texttt{place\_suitability} to determine the suitability of the current position for crossing.\\\\
     \bfc{CrossRoad -- Condition node}\\
         This node tells our algorithm if we are close enough to a road to take over the robot's controls. If we are not the path-planning or other node is left in control.\\
-        We use the return values of the ROS service call issued in the GetPosition node. This service has two return values -- validity and suitability. Suitability uses the road cost as well as context score to judge the place for crossing. Validity only calculates the distance of the current location to road segments from OSM.\\
-        Therefore the validity variable is the one determining the output of this node. The distance limit we proposed as sufficient is $10\:\rm{m}$ from the center of the road.\\\\
+        We use the return values of the ROS service call issued in the GetPosition node. This service has two return values -- \texttt{validity} and \texttt{suitability}. \texttt{Suitability} uses the road cost as well as context score to judge the place for crossing. For \texttt{validity}, we only calculate the distance of the current location to road segments from OSM.\\
+        Therefore the \texttt{validity} variable is the one determining the output of this node. The distance limit we proposed as sufficient is $10\:\rm{m}$ from the center of the road.\\\\
     \bfc{PlaceSuitable -- Condition node}\\
-        This node states whether the stored robot's location, as blackboard variable, is suitable for crossing.\\
-        It uses the second return value from the ROS service called from the GetPosition node. As stated, this value takes into account the road cost for our location from the road-cost algorithm (\ref{sec:road_cost}) and the context score calculated separately before the service call.\\
+        This node states whether the current robot's location, stored as a blackboard variable, is suitable for crossing.\\
+        It uses the second return value from the ROS service called in the GetPosition node. As stated, this value takes into account the road cost for our location from the road-cost algorithm (\ref{sec:road_cost}) and the context score calculated separately before the service call.\\
         The context score is based on the contextual information that is available to us. This information may be passed from other nodes (e.g., computer vision node for detecting road parameters) or set by the operator.\\
         The calculation of the context score and the process of obtaining the contextual information is described in \ref{sec:context}.\\\\
 
