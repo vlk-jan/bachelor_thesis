@@ -3,38 +3,38 @@
 
     \subsection{ROS services}
         We use multiple ROS services in our algorithm. These services are mostly used to obtain information about the road we are crossing. All services are implemented within the \texttt{road\_crossing} package.\\
-        We will present the individual services and their purpose in the algorithm. We will not show the definition of the service messages or go into detail about the implementation of the services.\\\\
+        We will present the individual services and their purpose in the algorithm. However, we will not show the definition of the service messages or go into details about the implementation of the services.\\\\
         \bfc{GetFinish}\\
-            This service is used to obtain information on whether the robot's current position is optimal for finishing the crossing. We call the service with the robot's current position.\\
+            This service is used to determine whether the robot's current position is optimal for finishing the crossing.\\
             This service is used by the \texttt{CrossingFinished} node of the \texttt{Crossing} sub-tree. The determining factor is explained in the \texttt{CrossingFinished} node section.\\\\
         \bfc{GetRoadInfo}\\
-            This service is used to obtain information about the road we are crossing. This information includes the position of the road, contextual information, and the starting position of the robot. The position of the road is defined by the road segment we used in the road cost algorithm and is returned by the two points defining the segment. The contextual information contents were described earlier. The robot's starting position was the geographical position of the robot when the crossing algorithm started.\\
-            The service call takes the position of the robot in the UTM format. It then finds the closest road segment from the saved segments with information. The final distance to the road segment does not matter; we need the closest one. It then returns the information about the road segment.\\\\
+            This service is used to obtain information about the road we are crossing. This information includes the position of the road, contextual information, and the starting position of the robot. The position of the road is set by the two points defining the road segment we used in the road cost algorithm. The contextual information contents were described earlier. The robot's starting position was the geographical position of the robot when the crossing algorithm started.\\
+            The service call takes the position of the robot in the UTM format. It then finds the closest road segment from the saved segments with information. The final distance to the road segment does not matter; we pick the closest one. It then returns the information about the road segment.\\\\
         \bfc{GetRoadSegment}\\
-            This service is used to obtain the road segment the robot is crossing. The road segment's definition was presented in the previous section.\\
-            The service call takes the position of the robot in the UTM format. It then finds the closest road segment from the saved segments with information. The location of the two defining points of the road segment is then returned.\\\\
+            This service is used to obtain the road segment the robot is crossing. The road segment's definition was presented in the previous service.\\
+            The service call takes the position of the robot in the UTM format. It then finds the closest road segment from the saved segments from the road cost algorithm. The location of the two defining points of the road segment is then returned.\\\\
         \bfc{GetSuitability}\\
             This service is used to determine if the position of the robot is valid and suitable for crossing the road.\\
-            The service call takes the geographical position of the robot in the UTM format and the contextual score. It finds the closest road segment from the road cost algorithm results. If the distance to any road segments is greater than 10 meters, the position is deemed invalid for crossing, and such is returned.\\
-            If the position is valid, it then calculates the final cost score based on the road and contextual scores. If the final score is below the threshold, the position is deemed unsuitable for crossing. The threshold is set to 20.\\\\
+            The service call takes the geographical position of the robot in the UTM format and the contextual score. It finds the closest road segment from the road cost algorithm results. If the distance to any road segment is greater than 10 meters, the position is deemed invalid for crossing, and such is returned.\\
+            If the position is valid, it then calculates the final cost score based on the cost of the road segment and the contextual score. The position is deemed unsuitable for crossing if the final score is below a set threshold. The threshold is set to 20.\\\\
         \bfc{StartAlgorithm}\\
             This service is used to start and end the crossing algorithm. This service is intended to be used from the outside of the algorithm.\\
-            The call takes two boolean values, start and stop. Only one is permitted to be set as true. Otherwise, a warning is printed.
+            The call takes two boolean values, start and stop. Only one is permitted to be set as true. Otherwise, a warning is raised.
 
     \subsection{ROS nodes and messages}
-        We use multiple ROS nodes in our algorithm. These nodes are mostly service servers. And we have one node that is responsible for the main crossing algorithm. We also have some nodes that simulate the work of other ROS nodes. These may include the vehicle detection node or the node calling the start and stop of the algorithm. All nodes are implemented within the \texttt{road\_crossing} package.\\
-        We also have some messages that are used to communicate between the nodes.\\\\
+        Our algorithm uses several ROS nodes, primarily service servers. The main crossing algorithm is executed by a dedicated node, while other non-server nodes simulate the operation of various ROS projects. For example, some nodes handle vehicle detection simulation, while others initiate the start or stop of the algorithm. All nodes are encapsulated within the \texttt{road\_crossing} package.\\
+        The communication between nodes is provided via ROS topics with custom ROS messages.\\\\
         \bfc{Injector messages}\\
-            These messages are used to simulate the vehicle detection node. They are used to inject the vehicle information into the algorithm.\\\\
+            We use these messages to emulate the behavior of the vehicle detection node, as they enable us to input vehicle information into the algorithm. Specifically, they simulate the data that would typically be obtained from a 3D bounding box generated from LiDAR data. The data they simulate is later parsed and stored as a \texttt{vehicle\_info} object from \ref{lst:vehicle_data}.\\\\
         \bfc{Start messages}\\
-            These messages start and stop the algorithm after the start or stop service is called. This is necessary as the service is in a different node, and therefore, the variables are inaccessible from the crossing algorithm.\\\\
+            These messages communicate the change in the run state of the main algorithm. This is necessary as the start/stop service is in a different node, making the state variable inaccessible from the main algorithm.\\\\
         \bfc{Service nodes}\\
-            We have an individual node for every service described in the previous section. The nodes are implemented as service servers.\\\\
+            To implement the services detailed in the previous section, we created separate nodes for each. Each node was designed as a service server. We opted to implement the nodes using Python, as they depend on data generated by the road cost algorithm and require access to the data structures used to store the costs.\\\\
         \bfc{Crossing algorithm node}\\
-            This is the node of the main algorithm. In this node, all the subscribers are implemented. The subscribed topics are: \texttt{/gps/fix}, \texttt{/compass/\ldots}, \texttt{/road\_crossing/start} and \texttt{/road\_crossing/injector}. The compass topic is determined during the algorithm's runtime based on the compass topic available. This node also initializes all of our publishers and server clients.\\
-            In one run of the main loop in this node, we tick the BT and perform one round of ROS callbacks.\\\\
+            The primary algorithm developed in this thesis is executed using a single node. This node is responsible for subscribing to the relevant topics required for the algorithm's execution, including \texttt{/gps/fix}, \texttt{/compass/\ldots}, \texttt{/road\_crossing/start}, and \texttt{/road\_crossing/injector}. The specific compass topic is determined dynamically during the algorithm's runtime based on the available compass topics. Additionally, the node initializes all of the required publishers and server clients.\\
+            For each iteration of the main loop within this node, we perform a single round of ROS callbacks and tick the behavior tree.\\\\
         \bfc{Launch files}\\
-            We have three launch files in our package. The first one is the \texttt{services.launch}, which launches all of our service nodes. Alongside this, we launch two other nodes. The \texttt{get\_mag\_shift} and \texttt{magnetometer\_compass} from \texttt{gps\_to\_path} and \texttt{compass} packages respectively.\\
-            The second launch file is the \texttt{crossing.launch} which launches the main crossing algorithm node.\\
-            The last launch file is the \texttt{demo.launch} which includes the previous two launch files.
+            Within our package, we have three launch files. The first, \texttt{services.launch}, is responsible for initializing and running the service servers. Alongside this, it launches two other nodes. The \texttt{get\_mag\_shift} and \texttt{magnetometer\_compass} from \texttt{gps\_to\_path} and \texttt{compass} packages respectively.\\
+            The second launch file, \texttt{crossing.launch}, is used to launch the primary algorithm node.\\
+            Finally, the \texttt{demo.launch} file combines the previous two launch files, making it possible to execute both the service servers and the primary algorithm node in one launch command.
     
