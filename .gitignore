@@ -277,3 +277,5 @@ TSWLatexianTemp*
 
 # IPE autosave files
 *.autosave.ipe
+
+*_center.pdf

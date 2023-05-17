@@ -4,7 +4,7 @@
     In multiple nodes, we will use information about the detected vehicles and collision parameters for each vehicle. Therefore, we must first define the data structures used to store this information.\\\\
     \bfc{Vehicle data}\\
         The data structure for storing the information about the detected vehicles is defined in \ref{lst:vehicle_data}.\\
-        The first struct \texttt{vehicle\_info} stores the information about the single detected vehicle. The position of the vehicle is expressed in relation to the robot's frame. The robot frame means the center of the robot is the origin of the coordinate system. The $x$-axis points forward from the robot, and the $y$-axis points to the left.\\
+        The first struct \texttt{vehicle\_info} stores the information about the single detected vehicle. The position of the vehicle is expressed in relation to the robot's frame. The robot frame means the center of the robot is the origin of the coordinate system. The $x$-axis points forward from the robot, and the $y$-axis points to the right.\\
         The second struct \texttt{vehicles\_data} stores the \texttt{vehicle\_info} structs of all detected vehicles.\\\\
     \bfc{Collision data}\\
         The data structure for storing the collision parameters has the definition in \ref{lst:collision_data}.\\
@@ -23,7 +23,7 @@
         \end{itemize}
     \bfc{Calculating the collision parameters}\\
         First, we need to state the assumptions we are making in order to simplify the calculation.\\
-        The first assumption is about the coordinate system we are using. We are using the robot's frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the left. We can assume this because the calculations are done periodically, and the results are only relevant for the current time step. It also simplifies the process, as the vehicle positions are already expressed in the robot's frame.\\
+        The first assumption is about the coordinate system we are using. We are using the robot's frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the right. We can assume this because the calculations are done periodically, and the results are only relevant for the current time step. It also simplifies the process, as the vehicle positions are already expressed in the robot's frame.\\
         The second assumption is about the movement of the robot. We assume the robot is moving in a straight line with constant velocity. This is reasonable as we want the robot to be as predictable as possible, so we do not want to move the robot to the side. The assumption about the constant velocity, meaning the acceleration is zero, is also reasonable. The speeds the robot can achieve are much lower than the robot's acceleration, which can, therefore, be neglected.\\
         The third assumption is about the movement of the vehicle. We assume the vehicle's acceleration is constant. This is a reasonable simplification as the calculation is done periodically with a high enough frequency.\\
         The fourth assumption is that we will calculate the collision only in two dimensions. This is reasonable as the $z$-axis will not impact the occurrence of a collision. Moreover, the area over which the collision can occur is relatively small. Therefore, any terrain deviations will not significantly impact the collision.\\\\
@@ -107,7 +107,7 @@
     \bfc{MoveBwd -- action node}\\
         When the system detects the presence of other vehicles and determines that a backward movement is required, this node comes into play. To enable backward movement, we will publish the relevant velocity information to the topic \texttt{/cmd\_vel}. The specific velocity will be calculated using the output from the \texttt{CalculateCollision} node. We will set the minimum backward velocity such that collisions are avoided.\\\\
     \bfc{StopMovement -- action node}\\
-        This node is used when there is no possible movement forward without the robot colliding with a vehicle, and movement back is unnecessary or would also result in a collision. We will stop the robot by publishing zero velocity to the topic \texttt{/cmd\_vel}.\\\\
+        This node is used when there is no possible movement forward without the robot colliding with a vehicle, and movement back is unnecessary or would also result in a collision. This node is also used as an emergency stop in case a movement was requested but no velocity could be chosen. We will stop the robot by publishing zero velocity to the topic \texttt{/cmd\_vel}.\\\\
     \bfc{CollisionFwdMove -- condition node}\\
         This node is used to determine whether there are vehicles in front of the robot in such a position and velocity that the robot would collide with them if it moved forward.\\\\
     \bfc{CollisionBwdMove -- condition node}\\

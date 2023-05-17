@@ -133,7 +133,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
                 child {node [diamond, draw, aspect=2.3, xshift=0.3cm] {\texttt{StartCrossing}}}
                 child {node [draw, xshift=0-0.6cm, yshift=0-1.5cm] {\texttt{CalculateCollision}}}
                 child {node [draw, xshift=0-0.85cm, yshift=0-1.5cm] {?}
-                child {node [draw, xshift=0-1.1cm, yshift=0-0.4cm] {$\to$}
+                child {node [draw, xshift=0-0.95cm, yshift=0-1.5cm] {$\to$}
                 child {node [ellipse, draw, xshift=0-0.7cm] {\texttt{CollisionFwdMove}}}
                 child {node [draw, xshift=0-0.4cm] {?}
                 child {node [draw] {$\to$}
@@ -142,7 +142,8 @@ One of the most important parts of this thesis is the design of the BT algorithm
                 child {node [ellipse, draw] {\texttt{CollisionBwdMove}}}}
                 child {node [draw, xshift=0-1.1cm] {\texttt{MoveBwd}}}}
                 child {node [draw, xshift=0-0.7cm] {\texttt{StopMovement}}}}}
-                child {node [draw, xshift=0-2.05cm, yshift=0-0.4cm] {\texttt{MoveFwd}}}}}}
+                child {node [draw, xshift=0-2.3cm, yshift=0-1.5cm] {\texttt{MoveFwd}}}
+                child {node [draw, xshift=0-2.8cm, yshift=0-1.5cm] {\texttt{StopMovement}}}}}}
                 child {node [diamond, draw, aspect=2.3, xshift=0.6cm] {\texttt{Finished}}}};
         \end{tikzpicture}
         \caption{The Crossing-BT structure.}
