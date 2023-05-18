@@ -92,7 +92,7 @@
         We will subscribe to the topic \texttt{/road\_crossing/injector}. We will publish this topic from a separate node designed solely to simulate the detection node.\\
         The information about the detected vehicles will be stored in a static variable for later use. The variable is of the format shown in listing \ref{lst:vehicle_data}.\\\\
     \bfc{CarsInTrajectory -- condition node}\\
-        This node is important for optimizing the flow of ticks in our behavior tree. The node is responsible for checking if there are any detected vehicles. We do not need to go through the calculation and decision-making if there are no vehicles. This speeds up the completion of this run of the BT and allows us to start the next run sooner.\\\\
+        This node is important for optimizing the flow of ticks in our behavior tree. The node is responsible for checking if there are any detected vehicles. We do not need to go through the calculation and decision-making if there are no vehicles. This speeds up the completion of this run of the BT and allows us to start the next run sooner.\\
     \bfc{NotStarted -- condition node}\\
         This node is responsible for checking if the movement across the road has been started. If it has not, we need to start the movement. If it has, we may continue with it.\\\\
     \bfc{StartMovement -- action node}\\

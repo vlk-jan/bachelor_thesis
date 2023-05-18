@@ -28,7 +28,7 @@ The simulation experiments served a vital role in the validation and enhancement
             The environment of the first scenario is shown in figure \ref{fig:scene1}. This simulation aims to test the algorithm's capabilities of calculating the optimal velocities for the robot. As this was our first proper experiment, the condition node determining if the road was crossed was also tested.\\
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=\linewidth]{images/simulations/scene1.pdf}
+                \includegraphics[width=0.95\linewidth]{images/simulations/scene1.pdf}
                 \caption{Environment for the first simulation scenario.}
                 \label{fig:scene1}
             \end{figure}
@@ -52,7 +52,7 @@ The simulation experiments served a vital role in the validation and enhancement
             In the second scenario, we used the configuration shown in figure \ref{fig:scene2}. This scenario was used to test our algorithm's prediction of the vehicle's trajectory. We constructed three further sub-scenarios. Firstly, the deceleration of the vehicle would stop the vehicle in the path of the robot. Secondly, the vehicle would come to a stop after crossing the robot's path. Lastly, with the highest deceleration, the vehicle would stop before crossing the robot's path.\\
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=\linewidth]{images/simulations/scene2.pdf}
+                \includegraphics[width=0.95\linewidth]{images/simulations/scene2.pdf}
                 \caption{Environment for the second simulation scenario.}
                 \label{fig:scene2}
             \end{figure}
@@ -69,7 +69,7 @@ The simulation experiments served a vital role in the validation and enhancement
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_1_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the first sub-scenario in the second scenario of simulation experiments.}
+                \caption{Results for the first sub-scenario in the second scenario of simulation.}
                 \label{fig:scene2_1_graphs}
             \end{figure}
             \begin{figure}[H]
@@ -84,7 +84,7 @@ The simulation experiments served a vital role in the validation and enhancement
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_2_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the second sub-scenario in the second scenario of simulation experiments.}
+                \caption{Results for the second sub-scenario in the second scenario of simulation.}
                 \label{fig:scene2_2_graphs}
             \end{figure}
             \begin{figure}[H]
@@ -106,7 +106,7 @@ The simulation experiments served a vital role in the validation and enhancement
             With this simulation experiment, we wanted to validate the algorithm's ability to handle multiple vehicles in a line. In this simulation, the vehicles also started from a greater distance and moved with greater velocities. The environment of the simulation is shown in figure \ref{fig:scene3}.\\
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=\linewidth]{images/simulations/scene3.pdf}
+                \includegraphics[width=0.95\linewidth]{images/simulations/scene3.pdf}
                 \caption{Environment for the third simulation scenario.}
                 \label{fig:scene3}
             \end{figure}
@@ -132,7 +132,7 @@ The simulation experiments served a vital role in the validation and enhancement
             Figure \ref{fig:scene4} shows the setting for this simulation experiment. This experiment aimed to test the impact of the velocity margin on the robot's behavior. We ran two simulations, one with a velocity margin set to $0.15\:\si{\m\per\s}$ and the other with a velocity margin set to $0.25\:\si{\m\per\s}$. The results are shown in graphs \ref{fig:scene4_1_graphs} and \ref{fig:scene4_2_graphs}.\\
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=\linewidth]{images/simulations/scene4.pdf}
+                \includegraphics[width=0.95\linewidth]{images/simulations/scene4.pdf}
                 \caption{Environment for the fourth simulation scenario.}
                 \label{fig:scene4}
             \end{figure}
@@ -168,3 +168,27 @@ The simulation experiments served a vital role in the validation and enhancement
                 \label{fig:scene4_2_graphs}
             \end{figure}
         \bfc{Scenario 5}\\
+            The last simulation experiment aimed to evaluate and test the robustness of our algorithm. We run multiple iterations of the same configuration, each with detection imprecisions. As these imprecisions are generated randomly, we obtained a more comprehensive insight into the algorithm's robustness. The environment of the simulation is shown in figure \ref{fig:scene5}.\\
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\linewidth]{images/simulations/scene5.pdf}
+                \caption{Environment for the fifth simulation scenario.}
+                \label{fig:scene5}
+            \end{figure}
+            The results of one of the runs are shown in graphs \ref{fig:scene5_graphs}. The graph \ref{fig:scene5_vel} shows that the robot would move in a jerking motion. While a smoothing filter could be implemented, we opted not to do so, as it would remove the robot's ability to escape danger quickly.\\ The effect of imprecise detection is quite evident on the lines detailing the minimal distance between vehicles and the robot. This graph was constructed from the detected parameters and not from the actual position of the vehicles. Even though it does not provide us with the safety aspect of the robot's behavior, it gives an insight into the algorithm's decision-making. The difference between the actual and detected position is also not so significant to render this data unusable for the discussion of safety.\\
+            \begin{figure}[H]
+                \centering
+                \begin{subfigure}{0.49\linewidth}
+                    \centering
+                    \includegraphics[trim={24 8 40 37}, clip, width=\linewidth]{images/simulations/scene5_dist.pdf}
+                    \caption{Minimal distance between the robot and vehicles.}
+                \end{subfigure}
+                \begin{subfigure}{0.49\linewidth}
+                    \centering
+                    \includegraphics[trim={21 8 40 37}, clip, width=\linewidth]{images/simulations/scene5_vel.pdf}
+                    \caption{Velocities of the robot during the crossing.}
+                    \label{fig:scene5_vel}
+                \end{subfigure}
+                \caption{Results for the fifth scenario of simulation experiments.}
+                \label{fig:scene5_graphs}
+            \end{figure}
