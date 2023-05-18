@@ -23,112 +23,121 @@ The simulation experiments served a vital role in the validation and enhancement
         The time to collision represents the estimated duration it would take for the robot to collide with the vehicle, assuming the robot maintains its current trajectory while the vehicle comes to a stop. The average time will be calculated from all relevant measurements. It would be pointless to calculate the time of collision if such collision is not possible.\\
         The deviation from the initial time to collision refers to the amount of time the robot would need to adjust the start time of its movement to ensure a collision occurs.
     \subsection{Simulation scenarios and results}
+        In most of the scenarios, we have tested certain behavior patterns. However, evaluation of algorithm robustness is also necessary. In some scenarios, there are one or more detection imprecisions or false detections altogether. The main scenario in which we verified robustness was scenario 5.\\\\
         \bfc{Scenario 1}\\
-            The environment of the first scenario is shown in figure \ref{fig:scene1}. The goal of this simulation is to test the algorithm's capabilities of calculating the optimal velocities for the robot. As this was our first proper experiment, the condition node determining if the road was crossed were also tested.\\
-            \begin{figure}[ht]
+            The environment of the first scenario is shown in figure \ref{fig:scene1}. This simulation aims to test the algorithm's capabilities of calculating the optimal velocities for the robot. As this was our first proper experiment, the condition node determining if the road was crossed was also tested.\\
+            \begin{figure}[H]
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/scene1.pdf}
                 \caption{Environment for the first simulation scenario.}
                 \label{fig:scene1}
             \end{figure}
             The graphs detailing the results of the experiment are shown in figure \ref{fig:scene1_graphs}.
-            \begin{figure}[ht]
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={24 8 40 41}, clip, width=\linewidth]{images/simulations/scene1_dist.pdf}
-                    \caption{Minimal distance between the robot and vehicles.}
+                    \caption{Minimal distance between the robot and detected vehicles.}
                 \end{subfigure}
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene1_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the first scenarion of simulation experiments.}
+                \caption{Results for the first scenario of simulation experiments.}
                 \label{fig:scene1_graphs}
             \end{figure}
         \bfc{Scenario 2}\\
-            \begin{figure}[ht]
+            In the second scenario, we used the configuration shown in figure \ref{fig:scene2}. This scenario was used to test our algorithm's prediction of the vehicle's trajectory. We constructed three further sub-scenarios. Firstly, the deceleration of the vehicle would stop the vehicle in the path of the robot. Secondly, the vehicle would come to a stop after crossing the robot's path. Lastly, with the highest deceleration, the vehicle would stop before crossing the robot's path.\\
+            \begin{figure}[H]
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/scene2.pdf}
                 \caption{Environment for the second simulation scenario.}
                 \label{fig:scene2}
             \end{figure}
-            \begin{figure}[ht]
+            The results of the first sub-scenario are shown in \ref{fig:scene2_1_graphs}, the second sub-scenario in \ref{fig:scene2_2_graphs}, and the third sub-scenario in \ref{fig:scene2_3_graphs}.
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={24 8 35 41}, clip, width=\linewidth]{images/simulations/scene2_1_dist.pdf}
-                    \caption{Minimal distance between the robot and vehicles.}
+                    \caption{Minimal distance between the robot and detected vehicles.}
                 \end{subfigure}
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_1_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the second scenarion of simulation experiments.}
+                \caption{Results for the first sub-scenario in the second scenario of simulation experiments.}
                 \label{fig:scene2_1_graphs}
             \end{figure}
-            \begin{figure}[ht]
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={24 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_2_dist.pdf}
-                    \caption{Minimal distance between the robot and vehicles.}
+                    \caption{Minimal distance between the robot and detected vehicles.}
                 \end{subfigure}
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_2_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the second scenarion of simulation experiments.}
+                \caption{Results for the second sub-scenario in the second scenario of simulation experiments.}
                 \label{fig:scene2_2_graphs}
             \end{figure}
-            \begin{figure}[ht]
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={24 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_3_dist.pdf}
-                    \caption{Minimal distance between the robot and vehicles.}
+                    \caption{Minimal distance between the robot and detected vehicles.}
                 \end{subfigure}
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_3_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the second scenarion of simulation experiments.}
+                \caption{Results for the third sub-scenario in the second scenario of simulation experiments.}
                 \label{fig:scene2_3_graphs}
             \end{figure}
         \bfc{Scenario 3}\\
-            \begin{figure}[ht]
+            With this simulation experiment, we wanted to validate the algorithm's ability to handle multiple vehicles in a line. In this simulation, the vehicles also started from a greater distance and moved with greater velocities. The environment of the simulation is shown in figure \ref{fig:scene3}.\\
+            \begin{figure}[H]
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/scene3.pdf}
                 \caption{Environment for the third simulation scenario.}
                 \label{fig:scene3}
             \end{figure}
-            \begin{figure}[ht]
+            The results are shown in graphs \ref{fig:scene3_graph1} and \ref{fig:scene3_graph2}.
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={24 8 40 41}, clip, width=\linewidth]{images/simulations/scene3_dist.pdf}
                     \caption{Minimal distance between the robot and vehicles.}
+                    \label{fig:scene3_graph1}
                 \end{subfigure}
                 \begin{subfigure}{0.49\linewidth}
                     \centering
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene3_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
+                    \label{fig:scene3_graph2}
                 \end{subfigure}
-                \caption{Results for the third scenarion of simulation experiments.}
+                \caption{Results for the third scenario of simulation experiments.}
                 \label{fig:scene3_graphs}
             \end{figure}
         \bfc{Scenario 4}\\
-            \begin{figure}[ht]
+            Figure \ref{fig:scene4} shows the setting for this simulation experiment. This experiment aimed to test the impact of the velocity margin on the robot's behavior. We ran two simulations, one with a velocity margin set to $0.15\:\si{\m\per\s}$ and the other with a velocity margin set to $0.25\:\si{\m\per\s}$. The results are shown in graphs \ref{fig:scene4_1_graphs} and \ref{fig:scene4_2_graphs}.\\
+            \begin{figure}[H]
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/scene4.pdf}
                 \caption{Environment for the fourth simulation scenario.}
                 \label{fig:scene4}
             \end{figure}
-            \begin{figure}[ht]
+            By comparing the two runs, it becomes evident that in the second simulation run, with a larger safety margin, the robot waited for both vehicles to pass before crossing. On the contrary, in the first run, the robot decided to cross the road in front of the closed vehicle.\\
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
@@ -140,10 +149,10 @@ The simulation experiments served a vital role in the validation and enhancement
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene4_1_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the fourth scenarion of simulation experiments.}
+                \caption{Results for the first run of the fourth scenario of simulation experiments.}
                 \label{fig:scene4_1_graphs}
             \end{figure}
-            \begin{figure}[ht]
+            \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
                     \centering
@@ -155,6 +164,7 @@ The simulation experiments served a vital role in the validation and enhancement
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene4_2_vel.pdf}
                     \caption{Velocities of the robot during the crossing.}
                 \end{subfigure}
-                \caption{Results for the fourth scenarion of simulation experiments.}
+                \caption{Results for the second run of the fourth scenario of simulation experiments.}
                 \label{fig:scene4_2_graphs}
             \end{figure}
+        \bfc{Scenario 5}\\
