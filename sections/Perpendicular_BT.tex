@@ -8,7 +8,7 @@
     \bfc{RoadHeading -- action node}\\
         This node calculates the heading of the closest road to the robot. We take the current robot's position from the blackboard variable \texttt{easting} and \texttt{northing} and send a request to the ROS service \texttt{get\_road\_heading}.\\
         The service returns the two coordinate points representing the closest road segment's starting and ending points.\\
-        We then calculate the heading of the road segment using the function defined in this section \ref{sec:geo_func}.\\
+        We then calculate the heading of the road segment using the function defined in section \ref{sec:geo_func}.\\
         The calculated road heading is then stored as a blackboard variable \texttt{road\_heading}.\\\\
     \bfc{ComputeHeading -- action node}\\
         This node uses the blackboard variable \texttt{azimuth} and \texttt{road\_heading} to calculate the heading the robot should achieve to be perpendicular to the road.\\

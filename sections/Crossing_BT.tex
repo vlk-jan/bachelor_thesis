@@ -5,6 +5,8 @@
     \bfc{Vehicle data}\\
         The data structure for storing the information about the detected vehicles is defined in \ref{lst:vehicle_data}.\\
         The first struct \texttt{vehicle\_info} stores the information about the single detected vehicle. The position of the vehicle is expressed in relation to the robot's frame. The robot frame means the center of the robot is the origin of the coordinate system. The $x$-axis points forward from the robot, and the $y$-axis points to the right.\\
+        The other options for expressing the position of the vehicle is in the global coordinate system or in the coordinate system of the road. The global coordinate system is defined by the GPS. The road coordinate system would be defined by the robot's position at the beginning of the crossing.\\
+        We can use the coordinate system defined by the robot's current position for several reasons. Firstly, because the calculations are done periodically, and the results are only relevant for the current time step. We expect to obtain new information about the vehicles with a frequency of $5\:\si{\Hz}$. And secondly, it simplifies the process, as the vehicle positions are already expressed in the robot's frame.\\
         The second struct \texttt{vehicles\_data} stores the \texttt{vehicle\_info} structs of all detected vehicles.\\\\
     \bfc{Collision data}\\
         The data structure for storing the collision parameters has the definition in \ref{lst:collision_data}.\\
@@ -23,16 +25,22 @@
         \end{itemize}
     \bfc{Calculating the collision parameters}\\
         First, we need to state the assumptions we are making in order to simplify the calculation.\\
-        The first assumption is about the coordinate system we are using. We are using the robot's frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the right. We can assume this because the calculations are done periodically, and the results are only relevant for the current time step. It also simplifies the process, as the vehicle positions are already expressed in the robot's frame.\\
+        The first assumption is about the coordinate system we are using. We are using the robot's frame, where the robot's center is the system's origin, and all the positions are expressed in relation to this origin. The $x$-axis points forward, and the $y$-axis points to the right. The reasons for the validity of this assumption were stated earlier.\\
         The second assumption is about the movement of the robot. We assume the robot is moving in a straight line with constant velocity. This is reasonable as we want the robot to be as predictable as possible, so we do not want to move the robot to the side. The assumption about the constant velocity, meaning the acceleration is zero, is also reasonable. The speeds the robot can achieve are much lower than the robot's acceleration, which can, therefore, be neglected.\\
         The third assumption is about the movement of the vehicle. We assume the vehicle's acceleration is constant. This is a reasonable simplification as the calculation is done periodically with a high enough frequency.\\
         The fourth assumption is that we will calculate the collision only in two dimensions. This is reasonable as the $z$-axis will not impact the occurrence of a collision. Moreover, the area over which the collision can occur is relatively small. Therefore, any terrain deviations will not significantly impact the collision.\\\\
-        Figure \ref{fig:collision} depicts a schematic view of the collision. There are two contact points, both on the robot and the vehicle. The first one (blue) is the point where the robot is going to collide with the front of the vehicle. The second one (red) is the point where the robot is going to collide with the back of the vehicle.\\
+        Figure \ref{fig:collision} depicts a schematic view of the collision and figure \ref{fig:collided} shows the collision in the collision points. There are two contact points, both on the robot and the vehicle. The first one (blue) is the point where the robot is going to collide with the front of the vehicle. The second one (red) is the point where the robot is going to collide with the back of the vehicle.\\
         \begin{figure}[ht]
             \centering
             \includegraphics[height=6cm]{images/collision.pdf}
             \caption{Visualization of collision points, coordinate system, and vehicle parameters.}
             \label{fig:collision}
+        \end{figure}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[height=7cm]{images/collided.pdf}
+            \caption{Visualization of the collision in collision points.}
+            \label{fig:collided}
         \end{figure}
         \noindent For the first point, we calculate the velocity \texttt{v\_front}. This velocity depicts the minimal speed of the robot to cross in front of the vehicle. We calculate the velocity \texttt{v\_back} for the second point. This velocity depicts the maximal speed of the robot to cross behind the vehicle.\\
         The subscript \texttt{r} is used for the parameters of the robot, and the subscript \texttt{v} is used for the parameters of the vehicle.\\
@@ -84,7 +92,7 @@
         We may have up to two solutions when calculating the times for non-zero acceleration in the $y$-axis. If we have none, the robot's and the vehicle's trajectories do not intersect.\\
         If we have one solution, the robot's and the vehicle's trajectories intersect once. The interpretation is that the vehicle is decelerating and will stop at the intersection point and then start reversing.\\
         If we have two solutions, the robot's and the vehicle's trajectories intersect two times. Multiple intersections could have several physical interpretations. We can interpret this as the vehicle decelerating, and therefore, changing the direction of travel after passing the intersection point. We can also interpret this as the vehicle accelerating, and therefore, the second time of the intersection is likely negative.\\
-        When choosing the calculated time, we will use the following criteria. If one time is positive and the second is negative, we will use the positive time. If both times are positive, we will use the shorter time. If both times are negative, we will use the larger time (the time that is closer to the present).\\\\
+        When choosing the calculated time, we will use the following criteria. If one time is positive and the second is negative, we will use the positive time. If both times are positive, we will use the shorter time. If both times are negative, we will use the larger time (the time that is closer to the present).\\
         The velocities can also be positive or negative. The interpretation is similar to the one of time. Positive velocity means moving forward, while negative velocity means moving backward. The resulting velocity must also be negative if we have a negative time.\\
         While it may seem irrelevant to calculate the time and velocity for backward movement, it is essential. This is because there is a possibility that another vehicle may be in motion, which could result in a collision with the robot. In that case, the robot will have to move backward to avoid the collision, and we need to be able to set the correct backward velocity to not collide with the first vehicle.\\\\
     \bfc{GetCars -- action node}\\
@@ -92,7 +100,7 @@
         We will subscribe to the topic \texttt{/road\_crossing/injector}. We will publish this topic from a separate node designed solely to simulate the detection node.\\
         The information about the detected vehicles will be stored in a static variable for later use. The variable is of the format shown in listing \ref{lst:vehicle_data}.\\\\
     \bfc{CarsInTrajectory -- condition node}\\
-        This node is important for optimizing the flow of ticks in our behavior tree. The node is responsible for checking if there are any detected vehicles. We do not need to go through the calculation and decision-making if there are no vehicles. This speeds up the completion of this run of the BT and allows us to start the next run sooner.\\
+        This node is important for optimizing the flow of ticks in our behavior tree. The node is responsible for checking if there are any detected vehicles. We do not need to go through the calculation and decision-making if there are no vehicles. This speeds up the completion of this run of the BT and allows us to start the next run sooner.\\\\
     \bfc{NotStarted -- condition node}\\
         This node is responsible for checking if the movement across the road has been started. If it has not, we need to start the movement. If it has, we may continue with it.\\\\
     \bfc{StartMovement -- action node}\\

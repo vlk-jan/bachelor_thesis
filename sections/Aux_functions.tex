@@ -20,8 +20,8 @@
             The first part is obtaining the road segments from downloaded OSM data. This part is also responsible for logging the road classification for each segment. The road segments from OSM data are divided into multiple smaller equidistant segments.\\
             The second part is responsible for determining the curvature of the roads. This is done by calculating the radius of the circumcircle of the triangle formed by the two adjacent road segments. This approach is visualized in image \ref{fig:curvature}. We then sort the road segments into multiple classes based on their radius. In this part, we also detect intersections and penalize the road segments close to them.\\
             In the third part, we determine the elevation profile of the road. We then classify the road segments using the TPI (Terrain Profile Index) method. Some TPI classes are presented in image \ref{fig:TPI}.\\
-            In the last part, we combine the results from the previous parts and calculate the final cost of crossing for each segment. These costs are then saved to a file to be used later.
-            \begin{figure}[H]
+            In the last part, we combine the results from the previous parts and calculate the final cost of crossing for each segment. These costs are then saved to a file to be used later.\\\\
+            \begin{figure}[ht]
                 \centering
                 \begin{subfigure}[b]{0.9\textwidth}
                     \centering
@@ -45,17 +45,11 @@
     \subsection{Mathematical functions}
     \label{sec:math_func}
         \bfc{Difference between two angles}\\
-            This function is used to determine the difference between two given angles. We assume the angles given are in radians, and both are in the interval $\langle0;2\pi\rangle$. This difference is calculated to be the smallest possible and to fit within the interval $\langle-\pi;\pi\rangle$. The formula we use is a modified version of the one provided here \cite{calc_rotation} and has the following form
+            This function is used to determine the difference between two given angles. We assume the angles given are in radians, and both are in the interval $\langle0;2\pi\rangle$. This difference is calculated to be the smallest possible and to fit within the interval $\langle-\pi;\pi\rangle$. The formula we use is a modified version of the one from \cite{calc_rotation} and has the following form
             \begin{equation}
                 \Delta\varphi = \left((\varphi_{2} - \varphi_{1} + \pi) \mod (2\pi)\right) - \pi.
             \end{equation}
-            Before returning the result, we check whether the result is within the specified interval.\\\\
-        \bfc{Converting degrees to radians}\\
-            While this function is elementary in its nature, it is frequently used in our code. Therefore it is beneficiary to create this function.\\
-            The equation for converting degrees to radians which this function uses is as follows
-            \begin{equation}
-                \varphi_{\rm{RAD}} = \varphi_{\rm{DEG}}\:\frac{\pi}{180}.
-            \end{equation}
+            Before returning the result, we check whether the result is within the specified interval.
 
     \subsection{Geographical functions}
     \label{sec:geo_func}
@@ -63,12 +57,11 @@
         \bfc{Converting GPS to UTM}\\
             While most geographical data are stored in the WGS84 coordinate system, generally known as GPS, the UTM coordinate system is more suitable for calculations. Therefore, we will convert the GPS coordinates to UTM.\\
             When working with geographical conversions in \CC, we use the library GeographicLib. The function from this library that provides the conversion is \texttt{GeographicLib::UTMUPS::Forward}. This function takes the point's latitude and longitude and returns the point's easting and northing in the UTM coordinate system. It also returns the zone number and whether the point is in the northern or southern hemisphere.\\
-            While the input variables are passed by value, the return variables are passed to the function call by reference.\\
             We use the \texttt{utm} library when converting geographical data in Python. The function facilitating the conversion from WGS84 to UTM is \texttt{utm.from\_latlon}.\\\\
         \bfc{Converting NED to ENU}\\
             There are two possible orientations of an azimuth. The NED (North-East-Down) and the ENU (East-North-Up).\\
             NED means that azimuth 0 points north, and its value increases clockwise. This orientation is mainly used in cartography and everyday life.\\
-            ENU means that azimuth 0 points east, and its value increases clockwise. This orientation is mainly used in navigation and robotics, as it is consistent with REP-103 \cite{REP-103}.\\
+            ENU means that azimuth 0 points east, and its value increases counterclockwise. This orientation is mainly used in navigation and robotics, as it is consistent with REP-103 \cite{REP-103}.\\
             In the entire project, we use the ENU orientation. However, as we rely on other ROS nodes to provide us with the azimuth, we need to be able to convert the azimuth from NED to ENU.\\
             The conversion should be much simpler since we do not deal with coordinates but with already computed azimuths.\\
             The image \ref{fig:dir_indi} shows the two possible orientations of the azimuth. This image also provides us with the insight we need to determine the conversion formula. We need to divide the formula into two parts.\\
@@ -86,10 +79,10 @@
             The second option is for all other azimuths, e.g., when the azimuth is between $\frac{\pi}{2}\:\si{\radian}$ and $2\pi\:\si{\radian}$. In this case, the azimuth in ENU is computed in the following way
             \begin{equation}
                 a_{\rm{ENU}} = \frac{5\pi}{2} - a_{\rm{NED}}.
-            \end{equation}
+            \end{equation}\\
         \bfc{Compute azimuth from coordinates}\\
             This function is used to compute the azimuth for an observer standing at the first point and looking at the second point.\\
-            We will use a slightly modified version of the formula provided here \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal \cite{Map_projections}. In testing the difference between calculated azimuths using the WGS84 and UTM coordinates was around $\Delta\varphi=0.097\:\si{\radian}$ or $\Delta\varphi=5.541\si{\degree}$.\\
+            We will use a slightly modified version of the formula from \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal \cite{Map_projections}. In testing the difference between calculated azimuths using the WGS84 and UTM coordinates was around $\Delta\varphi=0.097\:\si{\radian}$ or $\Delta\varphi=5.541\si{\degree}$.\\
             The computational equations are as follows
             \begin{align}
                 \Delta y &= y_{2} - y_{1}, \\
@@ -121,13 +114,13 @@
             In our case, the operator will submit the information. We have prepared a Python class with the appropriate variables and functions. To use the contextual information, the operator should create an instance of this class and fill in the appropriate variables.\\
             The creation of the class is recommended to be done in advance. It can be automated or done manually. The class also contains functions necessary for saving and loading contextual information to a file.\\
             During the execution of our algorithm, the tree node will call a ROS service to obtain the contextual information. This service will return the contextual information for the closest road to the requested location.\\
-            Thanks to this approach, we are able to log the contextual information for multiple roads and use them to evaluate the crossing locations.\\\\
+            By employing this approach, we can effectively capture and record contextual information for multiple roads, which in turn enables us to perform multiple road crossings during a mission.\\\\
         \bfc{Calculating the context score}\\
-            The score is calculated as a sum of points for each contextual information.
+            The final score is determined by the sum of points assigned to each contextual information.
             \begin{equation}
                 \xi_{\rm{context}} = \sum_{i=1}^{n} \xi_{\rm{context},i},
             \end{equation}
-            where $n=5$ as we currently have five different types of contextual information.\\
+            since we currently have only five distinct types of contextual information, we set $n$ equal to 5.\\
             The individual points are set as follows
             \begin{itemize}
                 \item \textbf{Maximal speed} -- $v_{\rm{max}}$

@@ -1,33 +1,70 @@
 \chapter{Data structures}
 \label{app:code}
     \begin{lstlisting}[language=C++, caption={Vehicle data structure}, label={lst:vehicle_data}]
-            struct vehicle_info {
-                int id;
-                double x_pos;
-                double y_pos;
-                double x_dot;
-                double y_dot;
-                double x_ddot;
-                double y_ddot;
-                double length;
-                double width;
-            };
-            struct vehicles_data {
-                int num_vehicles;
-                std::vector<vehicle_info> data;
-            };
-        \end{lstlisting}
+        struct vehicle_info {
+            int id;
+            double x_pos;
+            double y_pos;
+            double x_dot;
+            double y_dot;
+            double x_ddot;
+            double y_ddot;
+            double length;
+            double width;
+        };
+        struct vehicles_data {
+            int num_vehicles;
+            std::vector<vehicle_info> data;
+        };
+    \end{lstlisting}
 
-        \begin{lstlisting}[language=C++, caption={Collision data structure}, label={lst:collision_data}]
-            struct collision_info {
-                int car_id;
-                double v_front;
-                double v_back;
-                bool collide;
-                bool collide_stop;
-            };
-            struct collisions_data {
-                int num_collisions;
-                std::vector<collision_info> data;
-            };
-        \end{lstlisting}
+    \begin{lstlisting}[language=C++, caption={Collision data structure}, label={lst:collision_data}]
+        struct collision_info {
+            int car_id;
+            double v_front;
+            double v_back;
+            bool collide;
+            bool collide_stop;
+        };
+        struct collisions_data {
+            int num_collisions;
+            std::vector<collision_info> data;
+        };
+    \end{lstlisting}
+
+    \newpage
+    \begin{lstlisting}[language=C, caption={Start message file}, label={lst:start_msgs}]
+        Header header
+        
+        bool valid
+        bool start
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=C, caption={Injector message file}, label={lst:injector_msgs}]
+        Header header
+
+        # Clear data
+        bool clear
+
+        # Vehicle identifier
+        int64 veh_id
+
+        # Position of the vehicle
+        float64 easting
+        float64 northing
+
+        # Velocity of the vehicle
+        float64 x_dot
+        float64 y_dot
+
+        # Acceleration of the vehicle
+        float64 x_ddot
+        float64 y_ddot
+
+        # Vehicle dimensions
+        float64 length
+        float64 width
+
+        # Vehicle orientation
+        float64 phi
+    \end{lstlisting}
