@@ -136,7 +136,7 @@ The simulation experiments served a vital role in the validation and enhancement
                 \caption{Environment for the fourth simulation scenario.}
                 \label{fig:scene4}
             \end{figure}
-            By comparing the two runs, it becomes evident that in the second simulation run, with a larger safety margin, the robot waited for both vehicles to pass before crossing. On the contrary, in the first run, the robot decided to cross the road in front of the closed vehicle.\\
+            By comparing the two runs, it becomes evident that in the second simulation run, with a larger safety margin, the robot waited for both vehicles to pass before crossing. On the contrary, in the first run, the robot decided to cross the road in front of the closer vehicle.\\
             \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
@@ -175,7 +175,8 @@ The simulation experiments served a vital role in the validation and enhancement
                 \caption{Environment for the fifth simulation scenario.}
                 \label{fig:scene5}
             \end{figure}
-            The results of one of the runs are shown in graphs \ref{fig:scene5_graphs}. The graph \ref{fig:scene5_vel} shows that the robot would move in a jerking motion. While a smoothing filter could be implemented, we opted not to do so, as it would remove the robot's ability to escape danger quickly.\\ The effect of imprecise detection is quite evident on the lines detailing the minimal distance between vehicles and the robot. This graph was constructed from the detected parameters and not from the actual position of the vehicles. Even though it does not provide us with the safety aspect of the robot's behavior, it gives an insight into the algorithm's decision-making. The difference between the actual and detected position is also not so significant to render this data unusable for the discussion of safety.\\
+            The results of one of the runs are shown in graphs \ref{fig:scene5_graphs}. The graph \ref{fig:scene5_vel} shows that the robot would move in a jerking motion. While a smoothing filter could be implemented, we opted not to do so, as it would remove the robot's ability to escape danger quickly.\\
+            The effect of imprecise detection is quite evident on the lines detailing the minimal distance between vehicles and the robot. This graph was constructed from the detected parameters and not from the actual position of the vehicles. Even though it does not provide us with the safety aspect of the robot's behavior, it gives an insight into the algorithm's decision-making. The difference between the actual and detected position is also not so significant to render this data unusable for the discussion of safety.\\
             \begin{figure}[H]
                 \centering
                 \begin{subfigure}{0.49\linewidth}
@@ -192,3 +193,30 @@ The simulation experiments served a vital role in the validation and enhancement
                 \caption{Results for the fifth scenario of simulation experiments.}
                 \label{fig:scene5_graphs}
             \end{figure}
+        \bfc{Calculated values for time to contact and start time change}\\
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{|l|c c|c c|}
+                    \hline
+                    \multirow{2}{4em}{Scenario} & \multicolumn{2}{c|}{Time to contact [$\si{\s}$]} & \multicolumn{2}{c|}{Start time change [$\si{\s}$]}\\
+                    & Average & Minimal & Average & Minimal\\
+                    \hline\hline
+                    Scenario 1 & & & & \\
+                    \hline
+                    Scenario 2.1 & & & & \\
+                    \hline
+                    Scenario 2.2 & & & & \\
+                    \hline
+                    Scenario 2.3 & & & & \\
+                    \hline
+                    Scenario 3 & & & & \\
+                    \hline
+                    Scenario 4.1 & & & & \\
+                    \hline
+                    Scenario 4.2 & & & & \\
+                    \hline
+                    Scenario 5 & & & & \\
+                    \hline
+                \end{tabular}
+                \caption{Calculated values for time to contact and start time change.}
+            \end{table}

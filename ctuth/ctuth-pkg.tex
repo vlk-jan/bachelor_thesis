@@ -226,12 +226,13 @@
 % Inner margin is 1in + \oddsidemargin. We wanna preserve this value through all
 % the different page geometries
 \dim_const:Nn \g_ctuthesis_geometry_innermargin_dim { 1in + \the\oddsidemargin }
+\dim_const:Nn \g_ctuthesis_geometry_innermargin_dim_front_pages { 1in + \the\evensidemargin }
 
 % The frontmatter pages are a bit wider
 \cs_new_protected:Nn \ctuthesis_geometry_title: {
 	\newgeometry {
 		% Use the stored innermargin value
-		inner = \g_ctuthesis_geometry_innermargin_dim ,
+		inner = \g_ctuthesis_geometry_innermargin_dim_front_pages ,
 		% Increase the width by 20%, but do not exceed 420pt
 		textwidth = \dim_min:nn { 420pt } { 1.2 \g_ctuthesis_geometry_textwidth_dim } ,
 	 	textheight = \g_ctuthesis_geometry_textheight_dim ,
