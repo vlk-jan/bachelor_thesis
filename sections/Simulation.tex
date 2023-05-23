@@ -195,7 +195,19 @@ All of the experiments were conducted in the Gazebo Classic simulator.
             \end{figure}
     \subsection{Evaluation of the results}
         In this section, we will discuss the results of the simulation experiments. We will use the metric proposed in section \ref{sec:metrics}.\\
-        From the distance graphs, we can see that the robot was able to maintain a safe distance from the vehicles. The minimal distance was never smaller than $0.5\:\si{\m}$, and these minimal distances were achieved after the vehicle crossed the robot's path. Therefore, there was no danger of collision even if the vehicle performed some unexpected maneuver.\\
+        From the distance graphs, we can see that the robot was able to maintain a safe distance from the vehicles. The minimal distance, shown in table \ref{tab:dist}, was never smaller than $0.5\:\si{\m}$, and these minimal distances were achieved after the vehicle crossed the robot's path. Therefore, there was no danger of collision even if the vehicle performed some unexpected maneuver.\\
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+                \hline
+                Scenario & 1 & 2.1 & 2.2 & 2.3 & 3 & 4.1 & 4.2 & 5 \\
+                \hline
+                Minimal distance $[\si{\m}]$ & 0.54 & 1.74 & 1.00 & 0.63 & 1.01 & 0.74 & 0.52 & 0.85 \\
+                \hline
+            \end{tabular}
+            \caption{Minimal distance between the robot and vehicles in the simulation experiments.}
+            \label{tab:dist}
+        \end{table}
         Another two parameters of the metric are the ratio of time it would take to cross the empty road to the time in the simulated environment and whether the robot crossed the road. The time ratio is calculated with the following equation
         \begin{equation}
             \Delta t = \frac{t_{\text{empty}}}{t_{\text{simulated}}}
@@ -203,28 +215,16 @@ All of the experiments were conducted in the Gazebo Classic simulator.
         \noindent These two parameters are shown in table \ref{tab:met1}.
         \begin{table}[H]
             \centering
-            \begin{tabular}{|c|c|c|}
+            \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
                 \hline
-                Scenario & Time ratio $\Delta t$ & Crossed \\
-                \hline\hline
-                \multicolumn{1}{|l|}{Scenario 1} & $0.66$ & Yes \\
+                Scenario & 1 & 2.1 & 2.2 & 2.3 & 3 & 4.1 & 4.2 & 5 \\
                 \hline
-                Scenario 2.1 & \emph{NA} & No \\
+                Time ratio $\Delta t$ & 0.66 & \emph{NA} & 0.59 & 0.94 & 0.42 & 0.75 & 0.38 & 0.85 \\
                 \hline
-                Scenario 2.2 & $0.59$ & Yes \\
-                \hline
-                Scenario 2.3 & $0.94$ & Yes \\
-                \hline
-                \multicolumn{1}{|l|}{Scenario 3} & $0.42$ & Yes \\
-                \hline
-                Scenario 4.1 & $0.75$ & Yes \\
-                \hline
-                Scenario 4.2 & $0.38$ & Yes \\
-                \hline
-                \multicolumn{1}{|l|}{Scenario 5} & $0.74$ & Yes \\
+                Crossed & Yes & No & Yes & Yes & Yes & Yes & Yes & Yes \\
                 \hline
             \end{tabular}
-            \caption{Time ration and successful crossing parameters of the metric for the simulation experiments.}
+            \caption{Simulation experiment results showing the time ratio and successful crossing parameters of the metric.}
             \label{tab:met1}
         \end{table}
         \noindent In all except one scenario, the robot was able to finish the crossing. However, scenario 2.1 was specifically designed for the robot not to be able to cross the road. It is also evident that the $\Delta t$ is highly relative as this parameter depends on the traffic and the velocity margin gap we imposed on the robot.\\
@@ -260,73 +260,87 @@ All of the experiments were conducted in the Gazebo Classic simulator.
         The results for the time to contact indicate that the robot would be able to react and avoid a collision even in the case of an unexpected stop of the vehicle. The minimal values are all above $0.8\:\si{\s}$, and with the expected rate of detection node being $5\:\si{\Hz}$, it would have enough time to adapt. This is true even when we calculate the latency of obtaining the data from the detection node. We do not expect this latency to be higher than $0.2\:\si{\s}$, which would still leave us about $0.4\:\si{\s}$ to react.\\
         Interpretation of the results for the start time change is straightforward. The robot starts moving at the time $t=0$. The negative values mean the robot must start earlier to collide, and the positive values indicate the robot must start later. The calculated times correspond to the velocities the robot had during the successful crossings. Each result in a scenario is associated with a specific vehicle, and their order is determined by their ID.
     \subsection{Interesting points from trajectories}
-        We will show some interesting points from the trajectories of the movement of the robot and the vehicles. The parts we will show are when the robot began its movement and got closest to the vehicle.\\
-        The points shown as trajectories are the centers of the objects.
+        We will show some interesting points from the trajectories of the movement of the robot and the vehicles. The parts we will show are when the robot began its movement, figure \ref{fig:start}, and got closest to the vehicle, figure \ref{fig:closest}. We will not show the starts in scenarios 2.1 and 2.3 as in scenario 2.1 the robot never began its movement, and in 2.3 it started immediately.\\
+        The points shown as trajectories are the centers of the objects. In the vehicle trajectories it is evident that most of the experiments contained a vehicle detection error. 
         \begin{figure}[H]
             \centering
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_1.png}
                 \caption{Scenario 1.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_2_2.png}
                 \caption{Scenario 2.2.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_3.png}
                 \caption{Scenario 3.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_4_1.png}
                 \caption{Scenario 4.1.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_4_2.png}
                 \caption{Scenario 4.2.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/start_5.png}
                 \caption{Scenario 5.}
             \end{subfigure}
             \caption{Start of the robot's movement in the simulation experiments.}
+            \label{fig:start}
         \end{figure}
+        \newpage
+        \thispagestyle{nopagenum}
         \begin{figure}[H]
             \centering
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_1.png}
                 \caption{Scenario 1.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
+                \centering
+                \includegraphics[width=\linewidth]{images/simulations/closest_2_1.png}
+                \caption{Scenario 2.1.}
+            \end{subfigure}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_2_2.png}
                 \caption{Scenario 2.2.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
+                \centering
+                \includegraphics[width=\linewidth]{images/simulations/closest_2_3.png}
+                \caption{Scenario 2.3.}
+            \end{subfigure}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_3.png}
                 \caption{Scenario 3.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_4_1.png}
                 \caption{Scenario 4.1.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_4_2.png}
                 \caption{Scenario 4.2.}
             \end{subfigure}
-            \begin{subfigure}{0.32\linewidth}
+            \begin{subfigure}{0.49\linewidth}
                 \centering
                 \includegraphics[width=\linewidth]{images/simulations/closest_5.png}
                 \caption{Scenario 5.}
             \end{subfigure}
             \caption{The points of closest distance in the simulation experiments.}
+            \label{fig:closest}
         \end{figure}

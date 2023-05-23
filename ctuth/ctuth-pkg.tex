@@ -581,6 +581,18 @@
 	\fancyhead [ RO ] { \ctuthesis_fancy_xlap:nn { left } { \ctuthesis_fancy_leaders:n { r } \rightmark } }
 }
 
+\fancypagestyle { nopagenum }{
+	\fancyhf { }
+	\fancyfoot [ RO, LE ] { \texttt { \ctufield { preprint } } }
+	\renewcommand \headrulewidth { 0pt }
+	\renewcommand \footrulewidth { 0pt }
+	% reset headwidth to the global textwidth
+	\dim_set_eq:NN \headwidth \g_ctuthesis_geometry_textwidth_dim
+	% Include the left/rightmark and leaders
+	\fancyhead [ LE ] { \ctuthesis_fancy_xlap:nn { right } { \leftmark \ctuthesis_fancy_leaders:n { l } } }
+	\fancyhead [ RO ] { \ctuthesis_fancy_xlap:nn { left } { \ctuthesis_fancy_leaders:n { r } \rightmark } }
+}
+
 % The leaders macro for the fancyhead: nice little boxes. We make three of them: left, right and center-aligned
 
 \box_new:N \g_ctuthesis_fancy_bluerule_l_box
