@@ -10,7 +10,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
     \bfc{Chosen approach}\\
         We have chosen the first approach, meaning we will construct the whole tree structure by hand. This was done as it is the easiest approach to this task and requires no additional steps.\\
         Using different approaches to designing and improving the BT structure may be an interesting task for future work.\\
-        We will design the BT structure in the GUI application designed alongside our chosen BT library, Groot. The application interface is shown in figure \ref{fig:groot}.\\\\
+        We will design the BT structure in the GUI application designed alongside our chosen BT library, Groot. The application's interface is shown in figure \ref{fig:groot}.\\\\
         \begin{figure}[ht]
             \centering
             \includegraphics[width=\linewidth]{images/Groot.png}
@@ -22,7 +22,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
     We will divide the whole tree structure into several sub-trees to help with readability, modularity, and maintainability.\\
     The first sub-tree will accomplish the initialization and will be responsible for determining whether the crossing should commence. It is also responsible for navigating the robot to a suitable crossing place. This sub-tree will be called \texttt{Init-BT}.\\
     The second sub-tree is responsible for positioning the robot such that it is perpendicular to the road it is trying to cross. This sub-tree will be called \texttt{Perpendicular-BT}.\\
-    The third sub-tree is responsible for the navigation of the robot during the crossing. It will check the positions and speeds of incoming traffic and determine the best strategy for the crossing. This sub-tree will be called \texttt{Crossing-BT}.\\
+    The third sub-tree is responsible for the navigation of the robot during the crossing. It will check the position and velocity of incoming traffic and determine the best strategy for the crossing. This sub-tree will be called \texttt{Crossing-BT}.\\
     There are a few more sub-trees in our structure, but as those are not the main ones, we will not present them here. They will be presented when they are mentioned in the main sub-trees structure. Their main task is to help with the modularity and reusability of the behavior they encode.\\
     The main BT is shown in figure \ref{fig:main-BT}.\\
     \begin{figure}[ht]
@@ -40,7 +40,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
         \label{fig:main-BT}
     \end{figure}
     The main BT starts with a \texttt{Sequence} node. First, we need to check if the algorithm should be even started -- to avoid collision between two nodes trying to control the robot. This we achieve with a condition node \texttt{StartAlgorithm}. This node will check if the algorithm should be started. If it should not, the algorithm will not progress. The second child is a \texttt{SequenceStar} node. This node will tick the sub-trees responsible for the whole algorithm.\\
-    However, the first child is again a \texttt{SequenceStar} node. This is done to ensure that each preparation sub-trees will be successfully executed only once (if they return \texttt{SUCCESS}).\\
+    However, the first child is again a \texttt{SequenceStar} node. This is done to ensure that each preparation sub-tree will be executed only once, providing they return \texttt{SUCCESS}.\\
     The first preparation sub-tree is the \texttt{Init-BT}, its structure shown in chapter \ref{sec:Init-BT} and its implementation in chapter \ref{sec:Init-BT-impl}.\\
     The second preparation sub-tree is the \texttt{Perpendicular-BT}, its structure shown in chapter \ref{sec:Perpendicular-BT} and its implementation in chapter \ref{sec:Perpendicular-BT-impl}.\\
     The last sub-tree is the \texttt{Crossing-BT}, its structure shown in chapter \ref{sec:Crossing-BT} and its implementation in chapter \ref{sec:Crossing-BT-impl}.
@@ -117,7 +117,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
     The third child of the \texttt{Sequence} node is a structure of cascading if-else statements. The structure gradually checks the following conditions and performs the corresponding actions based on the results.\\
     The first condition is the \texttt{CollisionFwdMove}. This node checks if the robot is about to collide with any of the detected vehicles in front. If it is not, the robot will continue moving forward.\\
     If a collision is detected, we check if another collision would occur if we were to stop the robot. A condition node \texttt{CollisionOnStop} is responsible for the detection. If not, we can stop the robot.\\
-    With condition node \texttt{CollisionBwdMove} we check if the robot can move backward. If it can, we do so, providing there would be a collision on stop. If there would be a collision, we will stop the robot instead.\\
+    With condition node \texttt{CollisionBwdMove} we check if the robot can move backward. If it can, we do so, providing there would be a collision on stop. If there would be a collision on the backward movement, we will stop the robot instead.\\
     The robot will also stop its movement in case we tick a movement node and the movement is not successful. This could arrise if the velocity options do not provide a safe margin.\\
     \begin{figure}[H]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
@@ -156,7 +156,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
         \bfc{StartMovement BT}\\
         The \texttt{StartMovement} sub-tree is responsible for detecting if the movement process has started (the \texttt{NotStarted} condition node). If not, it starts the movement (the \texttt{StartMovement} action node).\\\\
         \bfc{Finished BT}\\
-        The \texttt{Finished} sub-tree detects if the robot has crossed the road. There are two ways we can detect if the road was crossed. The first condition node \texttt{CrossingFinished} performs the check with the current GPS coordinates of the robot and road data, namely its GPS coordinates and width. The second check is the condition node \texttt{StartAlgorithm}, where the condition could be set from outside the algorithm, for example, from a different ROS node.\\
+        The \texttt{Finished} sub-tree detects if the robot has crossed the road. There are two ways we can detect if the road was crossed. The first condition node \texttt{CrossingFinished} performs the check with the current GPS coordinates of the robot and road data, namely the global coordinates of the robot with the road's width. The second check is the condition node \texttt{StartAlgorithm}, where the condition could be set from outside the algorithm, for example, from a different ROS node.\\
         \begin{figure}[ht]
             \begin{subfigure}{0.45\textwidth}
                 \begin{tikzpicture}[sibling distance=24mm, minimum width=1cm, minimum height=0.8cm]

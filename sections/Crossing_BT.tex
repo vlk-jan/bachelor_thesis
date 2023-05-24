@@ -44,7 +44,7 @@
         \end{figure}
         \noindent For the first point, we calculate the velocity \texttt{v\_front}. This velocity depicts the minimal speed of the robot to cross in front of the vehicle. We calculate the velocity \texttt{v\_back} for the second point. This velocity depicts the maximal speed of the robot to cross behind the vehicle.\\
         The subscript \texttt{r} is used for the parameters of the robot, and the subscript \texttt{v} is used for the parameters of the vehicle.\\
-        The calculation is divided into three parts. In the first part, we determine the starting positions of the robot and the vehicle. In the second part, we calculate the time when the vehicle will reach the intersection point $(x_{\rm{i}}, y_{\rm{i}})$. In the last part, we calculate the velocities for the robot to collide with the vehicle.\\\\
+        The calculation is divided into three parts. In the first part, we determine the starting positions of the robot and the vehicle. In the second part, we calculate the time when the vehicle will reach the intersection point $(x_{\rm{i}}, y_{\rm{i}})$. And in the last part, we calculate the velocities for the robot to collide with the vehicle.\\\\
         The first part is necessary as the coordinates of both the robot and the vehicle are at the center of their respective bodies. We must move the starting points concerning the robot's and vehicle's length and width. The starting points for the robot are calculated using these equations:
         \begin{align}
             x_{\rm{r,f}} &= \frac{l_{\rm{r}}+w_{\rm{v}}}{2},\\
@@ -60,7 +60,7 @@
             y_{\rm{v,b}} &= y_{\rm{v}} - \frac{l_{\rm{v}}+w_{\rm{r}}}{2}\sin{(\varphi_{\rm{v}})},
         \end{align}
         where $\varphi_{\rm{v}} = \arctan{\left(\frac{\dot{y}_{\rm{v}}}{\dot{x}_{\rm{v}}}\right)}$ is the angle of the vehicle, $l_{\rm{v}}$ is the length of the vehicle and $w_{\rm{r}}$ is the width of the robot.\\
-        We put the width of the robot to calculate the vehicle's starting points and vice versa because we want to flatten the robot's dimensions. This is done to simplify the calculation of the intersection point of the robot's and vehicle's trajectory.\\
+        We put the width of the robot to calculate the vehicle's starting points and vice versa because we want to flatten objects in one dimension. This is done to simplify the calculation of the intersection point of the robot's and vehicle's trajectory.\\
         The second part of the calculation is further divided into two parts. The reason is that there are two possible scenarios for the calculation. We will use the general equation of motion \cite{equation_motion} for both calculations.\\
         In the first scenario, the vehicle's acceleration in the $y$-axis is zero. That means we can calculate the time using the following equations:
         \begin{align}
@@ -78,7 +78,7 @@
             x_{\rm{i,f}} &= x_{\rm{v,f}} + \dot{x}_{\rm{v}}t_{\rm{f}} + \frac{1}{2}\ddot{x}_{\rm{v}}t_{\rm{f}}^2,\\
             x_{\rm{i,b}} &= x_{\rm{v,b}} + \dot{x}_{\rm{v}}t_{\rm{b}} + \frac{1}{2}\ddot{x}_{\rm{v}}t_{\rm{b}}^2.
         \end{align}
-        Now we can calculate the velocities of the robot.
+        Now we can calculate the velocities for the robot.
         \begin{align}
             \dot{x}_{\rm{r,f}} &= \frac{x_{\rm{i,f}}-x_{\rm{r,b}}}{t_{\rm{f}}},\\
             \dot{x}_{\rm{r,b}} &= \frac{x_{\rm{i,b}}-x_{\rm{r,f}}}{t_{\rm{b}}}.
@@ -87,13 +87,13 @@
     \bfc{Interpretation of the calculated collision parameters}\\
         We will divide this section into two parts. The first part is the interpretation of the calculated time. The second part is the interpretation of the calculated velocities.\\\\
         If the calculated time is positive, the intersection point of the robot's and vehicle's trajectory is in the future. This means that the robot can collide with the vehicle without either of them changing the direction of travel.\\
-        If the calculated time is negative, it means that the intersection point of the robot's and vehicle's trajectory is in the past. This means that the robot can collide with the vehicle, but only if the vehicle or the robot would change its direction of travel.\\
+        If the calculated time is negative, it means that the intersection point of the robot's and vehicle's trajectory is in the past. This means that the robot can collide with the vehicle, but only if the vehicle or the robot, depending on the situaion, would change its direction of travel.\\
         The time can also be zero. This means that the robot and vehicle already collided. Therefore, we do not expect such time to arise as a result of the calculation.\\
         We may have up to two solutions when calculating the times for non-zero acceleration in the $y$-axis. If we have none, the robot's and the vehicle's trajectories do not intersect.\\
         If we have one solution, the robot's and the vehicle's trajectories intersect once. The interpretation is that the vehicle is decelerating and will stop at the intersection point and then start reversing.\\
         If we have two solutions, the robot's and the vehicle's trajectories intersect two times. Multiple intersections could have several physical interpretations. We can interpret this as the vehicle decelerating, and therefore, changing the direction of travel after passing the intersection point. We can also interpret this as the vehicle accelerating, and therefore, the second time of the intersection is likely negative.\\
         When choosing the calculated time, we will use the following criteria. If both times are positive, we will use the shorter time. If both times are negative, we will use the larger time (the time that is closer to the present). If one time is positive and the second is negative, we will use the time with smaller absolute value.\\
-        The velocities can also be positive or negative. The interpretation is similar to the one of time. Positive velocity means moving forward, while negative velocity means moving backward. The resulting velocity must also be negative if we have a negative time.\\
+        The velocities can also be positive or negative. The interpretation is similar to the one of time. Positive velocity means moving forward, while negative velocity means moving backward. It the resulting velocity was calculaed using negative time, than it also must be negative.\\
         While it may seem irrelevant to calculate the time and velocity for backward movement, it is essential. This is because there is a possibility that another vehicle may be in motion, which could result in a collision with the robot. In that case, the robot will have to move backward to avoid the collision, and we need to be able to set the correct backward velocity to not collide with the first vehicle.\\\\
     \bfc{GetCars -- action node}\\
         The action node \texttt{GetCars} obtains information about the detected vehicles. The detection node was not yet implemented when this thesis was written. Therefore, we will use the \texttt{GetCars} node to simulate the detection of vehicles.\\
@@ -106,16 +106,16 @@
     \bfc{StartMovement -- action node}\\
         This node is responsible for starting the movement across the road. We will set the maximal forward linear velocity to our inner static variable. This variable is responsible for storing the current velocity. The maximal velocity is chosen based on the maximal velocity of the robot used.\\\\
     \bfc{MoveFwdFull -- action node}\\
-        This node is used when no vehicles are detected, and therefore, we want to move the robot across the road as fast as possible. We publish the maximal forward linear velocity to the topic \texttt{/cmd\_vel}.\\\\
+        This node is used when no vehicles are detected, and therefore, we want to move the robot across the road as fast as possible. We publish the maximal forward linear velocity to the topic \texttt{/nav/cmd\_vel}.\\\\
     \bfc{CalculateCollision -- action node}\\
         In this node, we will calculate the collision parameters. We will use the formulas described earlier. The results will be stored in the inner static variables.\\
         This node will run the calculation for each vehicle independently. As each vehicle has its ID, we will use it to differentiate between them. This ID will also be used to delete all the results from the inner static variable when the vehicle is no longer detected.\\\\
     \bfc{MoveFwd -- action node}\\
-        This node is used when vehicles are detected, and a forward movement is possible. We will publish the forward velocity to the topic \texttt{/cmd\_vel}. The forward velocity is determined from the calculated velocities from the \texttt{CalculateCollision} node. We will set the maximal forward velocity while avoiding collisions.\\\\
+        This node is used when vehicles are detected, and a forward movement is possible. We will publish the forward velocity to the topic \texttt{/nav/cmd\_vel}. The forward velocity is determined from the calculated velocities from the \texttt{CalculateCollision} node. We will set the maximal forward velocity while avoiding collisions.\\\\
     \bfc{MoveBwd -- action node}\\
-        When the system detects the presence of other vehicles and determines that a backward movement is required, this node comes into play. To enable backward movement, we will publish the relevant velocity information to the topic \texttt{/cmd\_vel}. The specific velocity will be calculated using the output from the \texttt{CalculateCollision} node. We will set the minimum backward velocity such that collisions are avoided.\\\\
+        When the system detects the presence of other vehicles and determines that a backward movement is required, this node comes into play. To enable backward movement, we will publish the relevant velocity information to the topic \texttt{/nav/cmd\_vel}. The specific velocity will be calculated using the output from the \texttt{CalculateCollision} node. We will set the minimum backward velocity such that collisions are avoided.\\\\
     \bfc{StopMovement -- action node}\\
-        This node is used when there is no possible movement forward without the robot colliding with a vehicle, and movement back is unnecessary or would also result in a collision. This node is also used as an emergency stop in case a movement was requested but no velocity could be chosen. We will stop the robot by publishing zero velocity to the topic \texttt{/cmd\_vel}.\\\\
+        This node is used when there is no possible movement forward without the robot colliding with a vehicle, and movement back is unnecessary or would also result in a collision. This node is also used as an emergency stop in case a movement was requested but no velocity could be chosen. We will stop the robot by publishing zero velocity to the topic \texttt{/nav/cmd\_vel}.\\\\
     \bfc{CollisionFwdMove -- condition node}\\
         This node is used to determine whether there are vehicles in front of the robot in such a position and velocity that the robot would collide with them if it moved forward.\\\\
     \bfc{CollisionBwdMove -- condition node}\\

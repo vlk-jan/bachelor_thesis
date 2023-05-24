@@ -19,9 +19,9 @@
         We use the function defined in section \ref{sec:math_func} to compare the values to calculate the difference between two angles. The result is then compared to the threshold value, which is set to $0.1745\:\rm{rad}$ or $10\rm{^{\circ}}$.\\\\
     \bfc{RotateRobot -- action node}\\
         This node rotates the robot to the required heading.\\
-        First, we calculate the difference between the robot's current and desired azimuth. Then, based on the difference, we proportionally set the rotation direction and speed.\\
-        The calculated movement is then published to the \texttt{cmd\_vel} topic.\\\\
+        First, we calculate the difference between the robot's current and desired azimuth. Then, based on the difference, we set the rotation direction and velocity.\\
+        The calculated movement is then published to the \texttt{/nav/cmd\_vel} topic.\\\\
     \bfc{StepFromRoad -- action node}\\
         If, for whatever reason, the robot is not able to rotate safely, primarily due to the possibility of ending on the road, we use this node to move the robot away from the road.\\
         Firstly we check the difference between the robot's current azimuth and the road heading. Based on the difference, we set the direction of the movement.\\
-        The movement is then published to the \texttt{cmd\_vel} topic.
+        The movement is then published to the \texttt{/nav/cmd\_vel} topic.

@@ -9,10 +9,11 @@ The experiments were conducted in a controlled environment, with the robot cross
         \caption{AprilTag used for simulating the detection of vehicles.}
         \label{fig:apriltag}
     \end{figure}
-    For the detection of the AprilTag, we used the \textit{apriltag\_ros} package\footnote{\url{https://github.com/AprilRobotics/apriltag_ros}}. This package provides a ROS node, which subscribes to the image topic and publishes the pose of the detected AprilTags. A node to convert the pose from the camera frame to the body frame of the robot was also implemented. This node's other task was to take the transformed pose and convert it to the vehicle information necessary for our algorithm. The calculation of the velocity and acceleration of the vehicle was done only from the current and previous measurements.
+    For the detection of the AprilTag, we used the \textit{apriltag\_ros} package\footnote{\url{https://github.com/AprilRobotics/apriltag_ros}}. This package provides a ROS node, which subscribes to the image topic and publishes the pose of the detected AprilTags.\\
+    A node to transform the pose from the camera frame to the body frame of the robot was also implemented. This node's other task was to take the transformed pose and convert it to the vehicle information necessary for our algorithm. The calculation of the velocity and acceleration of the vehicle was done only from the current and previous measurements.
 
 \section{Experimental setup}
-    The experiment was conducted in the courtyard of our faculty. The robot was placed at the edge of the sidewalk, which served the purpose of a road the robot should cross. The map of the experimental area with the initial position of the robot is shown in figure \ref{fig:map}.\\
+    The experiments were performed in the courtyard of our faculty. The robot was placed at the edge of the sidewalk, which served the purpose of a road the robot should cross. The map of the experimental area with the initial position of the robot is shown in figure \ref{fig:map}.\\
     \begin{figure}[ht]
         \centering
         \includegraphics[width=0.8\textwidth]{images/map.png}
@@ -28,7 +29,7 @@ The experiments were conducted in a controlled environment, with the robot cross
 
     \subsection{Experiments without vehicles}
         The first phase was designed to test the algorithm without any vehicles present. The goal of this phase was to ensure that the robot could cross the road, meaning that the algorithm was able to control the movement of the robot.\\
-        As a part of the algorithm where the robot is being positioned perpendicular to the road could not be tested in simulations, we tested it extensively as a part of this experiment. We were unable to test it in the simulation experiments as the simulation of the magnetometer was not functional.\\\\
+        As a part of the algorithm, where the robot is being positioned perpendicular to the road, could not be tested in simulations, we tested it extensively as a part of these experiments. We were unable to test it in the simulation experiments as the simulation of the magnetometer was not functional.\\\\
         \bfc{Results}\\
             We started with the robot angled away from the ideal position, figure \ref{fig:init1}. The robot was able to rotate itself to reach the ideal perpendicular position, figure \ref{fig:perpendicular}. After reaching the perpendicular position, the robot was able to cross the road and stop at the other side, figure \ref{fig:final1}.\\
             \begin{figure}[ht]
@@ -54,11 +55,17 @@ The experiments were conducted in a controlled environment, with the robot cross
                 \end{subfigure}
                 \caption{Photos from the experiment without vehicles.}
             \end{figure}
-            The algorithm successfully determined the correct azimuth for the robot and rotated it to reach the position. The robot was able to cross the road and evaluate its position to determine that it had reached the other side.
+            The algorithm successfully determined the correct azimuth for the robot and rotated it to reach the position. The robot was able to cross the road and evaluate its position to determine that it had reached the other side. The trajectory of the robot is shown in figure \ref{fig:trajectory1}.
+            \begin{figure}[H]
+                \centering
+                \includegraphics[height=7.5cm]{images/real_trajectory.png}
+                \caption{Trajectory of the robot during the experiment without vehicles, the robot's position is shown both with odometry and gps (fix) data.}
+                \label{fig:trajectory1}
+            \end{figure}
 
     \subsection{Experiments with vehicles}
         In the second phase, we tested the algorithm with vehicles present. The goal of this phase was to test the algorithm in a more realistic scenario. We wanted to test the decision-making of the algorithm with real-world data from the detection node.\\
-        These experiments were more challenging as we had to troubleshoot the detection node. The implementation and functionality of the detection node were not a part of this thesis, and the time for its development was limited. We were able to conduct only one successful experiment with the detection node, as the detection node could not consistently detect the AprilTag in the other experiments. Given the constraints on the time available, fixing the detection node to conduct more experiments was not feasible. Furthermore, the omission of result from a successful experiment was not intentional, as it was not presumed that only a solitary experiment would succeed.
+        These experiments were more challenging as we had to troubleshoot the detection node. The implementation and functionality of the detection node were not a part of this thesis, and the time for its development was limited. We were able to conduct only one successful experiment with the detection node, as the detection node could not consistently detect the AprilTag in the other experiments. Given the constraints on the time available, fixing the detection node to conduct more experiments was not feasible. Furthermore, the omission of a result from the successful experiment was not intentional, as it was not presumed that only a solitary experiment would succeed. Therefore the experiment was not recorded.
 
     \subsection{Evaluation of the experiments}
         The performed experiments were successful in testing the algorithm's ability to use real data. The robot was able to utilize data from GNSS and magnetometer to determine its position and orientation. The robot was also able to process data provided by the detection node to determine the presence and position of vehicles.\\

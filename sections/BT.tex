@@ -10,7 +10,7 @@
             \hline\hline
             \texttt{Action} & Action succeeds & Unable to complete & During completion \\
             \hline
-            \texttt{Condition} & Condition is true & Condition is false & N/A \\
+            \texttt{Condition} & Condition is true & Condition is false & \emph{NA} \\
             \hline
             \texttt{Sequence} & All children succeed & One child fails & One child running \\
             \hline
@@ -38,8 +38,8 @@
         \textbf{Force-failure} -- Decorator node that returns \texttt{FAILURE} regardless of the return state of its child.
 
     \subsection{Graphical representation of BTs}
-        We will represent the BTs in this work in the following way. Action nodes will be rectangular with the name of the action written inside. Control nodes will be elliptical with the name of the condition written inside. Control and decorator nodes will be rectangular with a corresponding symbol inside. The symbols are shown in a table \ref{tab:symbols}.\\
-        If the BT has a sub-tree in its structure, we will represent it as a diamond-shaped node with the sub-tree name written inside.
+        We will represent the BTs in this work in the following way. Action nodes will be rectangular with the name of the action written inside. Control nodes will be elliptical with the name of the condition written inside. Control and decorator nodes will be rectangular with a corresponding symbol inside. The symbols are shown in table \ref{tab:symbols}.\\
+        If the BT has a sub-tree in its structure, we will represent it as a diamond-shaped node with the sub-tree's name written inside.
         \begin{table}[H]
             \centering
             \begin{tabular}{|l|l|c|}
@@ -49,8 +49,6 @@
                 \texttt{Root} & The root of the tree & $Root$ \\
                 \hline
                 \texttt{Sequence} & Ticks its children if the return is \texttt{SUCCESS} & $\to$ \\
-                \hline
-                \texttt{SequenceStar} & Ticks its children if the return is \texttt{SUCCESS} & $\to^{*}$ \\
                 \hline
                 \texttt{Fallback} & Ticks its children if the return is \texttt{FAILURE} & $?$ \\
                 \hline
@@ -76,18 +74,18 @@
             \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
                 \node [draw] {$Root$}
                     child {node [draw] {$\to$} edge from parent [-{Stealth[length=2.5mm]}]
-                    child {node [draw, xshift=0-.1cm] {GetAzimuth}}
-                    child {node [diamond, draw, aspect=2.3] {Heading}}
+                    child {node [draw, xshift=0-.1cm] {\texttt{GetAzimuth}}}
+                    child {node [diamond, draw, aspect=2.3] {\texttt{Heading}}}
                     child {node [draw, xshift=0-.5cm] {$\circ(10)$}
                     child {node [draw] {?}
-                    child {node [ellipse, draw, xshift=0-0.5cm] {RobotPerpendicular}}
+                    child {node [ellipse, draw, xshift=0-0.5cm] {\texttt{RobotPerpendicular}}}
                     child {node [draw] {$\times$}
-                    child {node [diamond, draw, aspect=2.3] {Rotate}}}}}};
+                    child {node [diamond, draw, aspect=2.3] {\texttt{Rotate}}}}}}};
             \end{tikzpicture}
             \caption{BT example.}
             \label{fig:example_tree}
         \end{figure}
-        We start in the root node and continue straight to the \texttt{sequence} node. From there, we go to the action node GetAzimuth, which gives us the current heading of the robot. If the execution of the GetAzimuth node is successful, we continue to the Heading sub-tree node. This sub-tree aims to calculate the heading the robot needs to achieve in order to be perpendicular. If all nodes inside the sub-tree are successful, we continue to the \texttt{repeat} node. This node will repeat its children ten times (or less if success is achieved sooner). The first child we will tick is a \texttt{fallback} node, with its first child being a condition node RobotPerpendicular. The condition node return value states whether or not the robot is already perpendicular to the road we mean to cross. If we are not yet perpendicular, we continue. The next node we tick is a \texttt{force-failure} node with a sub-tree node as its child. The sub-tree is responsible for rotating the robot to the desired heading.
+        We start in the root node and continue straight to the \texttt{sequence} node. From there, we go to the action node \texttt{GetAzimuth}, which gives us the current heading of the robot. If the execution of the \texttt{GetAzimuth} node is successful, we continue to the \texttt{Heading} sub-tree node. This sub-tree aims to calculate the heading the robot needs to achieve in order to be perpendicular. If all nodes inside the sub-tree are successful, we continue to the \texttt{repeat} node. This node will repeat its children ten times (or less if success is achieved sooner). The first child we will tick is a \texttt{fallback} node, with its first child being a condition node \texttt{RobotPerpendicular}. The condition node return value states whether or not the robot is already perpendicular to the road we mean to cross. If we are not yet perpendicular, we continue. The next node we tick is a \texttt{force-failure} node with a sub-tree node as its child. The sub-tree is responsible for rotating the robot to the desired heading.
 
     \subsection{Other used BT nodes}
         Here we will present other BT nodes. These nodes are an expansion of the common ones and are implementation specific.\\\\

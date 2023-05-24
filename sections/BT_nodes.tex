@@ -1,9 +1,9 @@
-This chapter will provide the implementation details for individual nodes used in our BT algorithm. We will split these descriptions into BT nodes and auxiliary functions used in the nodes. We will also provide the implementation details for ROS nodes and other ROS-related parts.
+This chapter will provide the implementation details for individual nodes used in our BT algorithm. We will split these descriptions into BT nodes and auxiliary functions used in the nodes. We will also provide the implementation details for ROS nodes and other ROS-related parts. All developed code is available on GitHub\footnote{\url{https://github.com/vlk-jan/road_crossing.git}}.
 
 \section{Behavior tree nodes}
     Here we will present the implementation of individual nodes in our algorithm. We will split the nodes into categories based on the sub-tree they belong to. We will also show the basic functionality of the library used.
     \subsection{Introduction}
-        The BT algorithm is implemented using the behaviortree-cpp-v3 library. Therefore, we will present how we create, implement and start ticking the tree. We will also show how nodes are created, implemented, and used.\\\\
+        The BT algorithm is implemented using the behaviortree-cpp-v3 library. Therefore, we will present how we create, implement and start the ticking of the tree. We will also show how nodes are created, implemented, and used.\\\\
         \bfc{Creating the node}\\
             To create the node, we need to create a class that inherits from one of the parent classes in the library. The parent classes depend on the type of node we want to create. If we create an action node, we inherit from the \texttt{SyncActionNode} class. If we create a condition node, we will inherit from the \texttt{ConditionNode} class.\\
             There are two mandatory functions for all nodes, the \texttt{tick} and \texttt{providedPorts} functions. These two functions must be implemented, or an error will occur.\\
@@ -25,7 +25,7 @@ This chapter will provide the implementation details for individual nodes used i
     \subsection{Main BT}
         In this BT, we only have one non-sub-tree node. This is because this sub-tree encodes the algorithm's structure rather than having nodes for execution.\\\\
         \bfc{StartAlgorithm -- Condition node}\\
-            This node is responsible for determining whether the robot is in the phase of crossing the road during its mission. It is necessary to implement such a node to facilitate the transfer of control from path planning to road crossing. In contrast, we could determine if the crossing should start based on the distance of the robot from the road. However, this method would fail whenever our robot has to walk alongside any road.\\
+            This node is responsible for determining whether the robot is in the phase of crossing the road during its mission. It is necessary to implement such a node to facilitate the transfer of control from path planning and navigation to road crossing. In contrast, we could determine if the crossing should start based on the distance of the robot from the road. However, this method would fail whenever our robot has to walk alongside any road.\\
             This node is implemented as a ROS service updating a static variable, which is checked when the node is ticked.\\
             This service should be used mainly by other nodes outside of the package itself, with one notable exception. The exception being the very last node of our tree. It serves as a prevention against the looping of our algorithm.
     \input{sections/Init_BT.tex}

@@ -1,5 +1,5 @@
 \section{Auxiliary functions}
-    In this section, we will present the auxiliary functions used in the nodes of our BT algorithm.\\
+    In this section, we will present the auxiliary functions used by the nodes of our BT algorithm.\\
     These will include the functions used for conversions, more complex or repetitive mathematical operations, and other functions that are not directly related to the BT algorithm.\\
     One of the big sections will be the algorithm used for determining the classification and cost of road segments in the road network.\\
     We will split the functions into categories based on their purpose.
@@ -8,12 +8,12 @@
         \label{sec:road_cost}
         We will use the algorithm developed during the summer of 2022 for the RobInGas project at the CTU CRAS. The algorithm was designed to determine the cost of crossing the road based on the road classification, curvature, and other factors.\\
         We will briefly present the functionality of the algorithm. The full description with implementation details can be found in \cite{Road_cost_docs}.\\
-        This is also the only part of the final solution in our thesis written in Python instead of \CC\ this is due to it being part of a different project. Other reasons include the usage of Python-specific libraries. While we could rewrite the code to \CC, it was not deemed necessary as this part is run only once at the beginning of the mission and therefore does not need to be optimized for speed.\\\\
+        This is also the part of the final solution in our thesis written in Python instead of \CC\ this is due to it being part of a different project. Other reasons include the usage of Python-specific libraries. While we could rewrite the code to \CC, it was not deemed necessary as this part is run only once at the beginning of the mission and therefore does not need to be optimized for speed.\\\\
         \bfc{Overview}\\
             We use multiple parameters to determine the cost of crossing. The most important ones are the geometrical properties of the road. This includes the curvature of the road, the elevation profile, and the proximity to intersections. We also use the road classification to add to the cost function.\\
             Other parameters would be beneficiary, such as the road width, the presence of a pedestrian crossing, and the expected traffic speed.\\
             Unfortunately, we do not have access to all of these parameters. We use the OSM data, which does not necessarily contain all those additional parameters. Therefore, we will inject this contextual information directly into the algorithm and deal with these parameters separately. The contextual information is discussed in section \ref{sec:context}.\\
-            The OSM data also do not contain the elevation profile of the road. Acquiring this data is not straightforward, as it is not readily available through free or open-source channels. The elevation data we use were purchased from the Land Survey Office of the Czech Republic. We use the ZABAGED \cite{ZABAGED} data. This data from the Land Survey Office are available only for the area of the Czech Republic. However, any file with elevation data with the correct formatting can be used. The file format in use conforms to the following specifications: each line of the text file contains the easting, northing, and altitude coordinates for a single point, separated by a space. Each point is described in a separate line, and lines are separated using the newline character \texttt{\textbackslash n}.\\
+            The OSM data also do not contain the elevation profile of the road. Acquiring this data is not straightforward, as it is not readily available through free or open-source channels. The elevation data we use were purchased from the Land Survey Office of the Czech Republic. We use the ZABAGED \cite{ZABAGED} data. This data from the Land Survey Office are available only for the area of the Czech Republic. However, any file with elevation data with the correct formatting can be used. The file format in use conforms to the following specifications: each line of the text file contains the easting, northing, and altitude coordinates for a single point, separated by a space. Each point is described in a separate line, and lines are separated using the newline character \texttt{"\textbackslash n"}.\\
             If the elevation data are not provided, the algorithm will still function. It will just not take the elevation profile into account. The road cost will be determined only from the curvate, proximity to intersections, and road classification.\\\\
         \bfc{Algorithm}\\
             The algorithm is divided into several parts.\\
@@ -38,10 +38,10 @@
                 \caption{Visualization of key elements in the road cost algorithm.}
             \end{figure}
         \bfc{Usage}\\
-            As was stated earlier, this algorithm is executed only once at the beginning of the mission. Later we only keep the final costs, and based on them, we determine if the location where the robot is trying to cross is suitable and safe.\\
+            As was stated earlier, this algorithm is executed only once preferably during the pre-mission planning. Later we only keep the final costs, and based on them, we determine if the location where the robot is trying to cross is suitable and safe.\\
             We rely on ROS to enable the communication between our main algorithm and the algorithm for determining the suitability of the location for crossing. We implemented a ROS service for this purpose.\\
             Another part of the algorithm that could be implemented in future work is to try and provide the robot with a more suitable crossing place. This could be used if the pre-mission planning was not performed or the robot's path changed, and the current location is unsuitable. If such a place is found and provided, a cost map that will be used to change the current cost map of the path planner should be published. This is done so that the robot's controls are not overridden until we begin the crossing itself.\\
-            The effect of this algorithm on the path planner is shown in image \ref{fig:path}.
+            The effect of this algorithm on a path planner is shown in image \ref{fig:path}.
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.53\textwidth]{images/path.png}
@@ -80,15 +80,15 @@
             \end{figure}
             \noindent The first option is when the azimuth (in NED) is between $0\:\si{\radian}$ and $\frac{\pi}{2}\:\si{\radian}$. In this case, the azimuth in ENU is computed in the following way
             \begin{equation}
-                a_{\rm{ENU}} = \frac{\pi}{2} - a_{\rm{NED}},
+                \varphi_{\rm{ENU}} = \frac{\pi}{2} - \varphi_{\rm{NED}},
             \end{equation}
-            where $\text{a}_{\rm{ENU}}$ is the azimuth in ENU and $\text{a}_{\rm{NED}}$ is the azimuth in NED.\\
+            where $\varphi_{\rm{ENU}}$ is the azimuth in ENU and $\varphi_{\rm{NED}}$ is the azimuth in NED.\\
             The second option is for all other azimuths, e.g., when the azimuth is between $\frac{\pi}{2}\:\si{\radian}$ and $2\pi\:\si{\radian}$. In this case, the azimuth in ENU is computed in the following way
             \begin{equation}
-                a_{\rm{ENU}} = \frac{5\pi}{2} - a_{\rm{NED}}.
+                \varphi_{\rm{ENU}} = \frac{5\pi}{2} - \varphi_{\rm{NED}}.
             \end{equation}\\
         \bfc{Compute azimuth from coordinates}\\
-            This function is used to compute the azimuth for an observer standing at the first point and looking at the second point.\\
+            This function is used to compute the azimuth (in NED) for an observer standing at the first point and looking at the second point.\\
             We will use a slightly modified version of the formula from \cite{calc_bearing}. This calculation was created for the WGS84 coordinate system, however, we use the UTM coordinate system. Having said that, we can use the same formula, as the WGS84 to UTM projection is conformal \cite{Map_projections}. In testing the difference between calculated azimuths using the WGS84 and UTM coordinates was around $\Delta\varphi=0.097\:\si{\radian}$ or $\Delta\varphi=5.541\si{\degree}$.\\
             The computational equations are as follows
             \begin{align}
