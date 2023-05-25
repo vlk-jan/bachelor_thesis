@@ -7,8 +7,8 @@
         For every obtained value, it also calls a ROS service \texttt{place\_suitability} to determine the suitability of the current position for crossing.\\\\
     \bfc{CrossRoad -- Condition node}\\
         This node tells our algorithm if we are close enough to a road to take over the robot's controls. If we are not the path-planning or other node is left in control.\\
-        We use the return values of the ROS service call issued in the \texttt{GetPosition} node. This service has two return values -- \texttt{validity} and \texttt{suitability}. \texttt{Suitability} uses the road cost as well as context score to judge the place for crossing. For \texttt{validity}, we only calculate the distance of the current location to road segments from OSM.\\
-        Therefore the \texttt{validity} variable is the one determining the output of this node. The distance limit we proposed as sufficient is $10\:\rm{m}$ from the center of the road.\\\\
+        We use the return values of the ROS service call issued in the \texttt{GetPosition} node. This service has two return values -- \texttt{validity} and \texttt{suitability}. \texttt{Suitability} uses the road cost as well as context score to judge the place for crossing. For \texttt{validity}, we only calculate the distance of the current location to road segments from OSM. The distance limit we proposed as sufficient is $\frac{3}{4}\,w_{r}$ from the center of the road, where $w_{r}$ is the road's width.\\
+        Therefore the \texttt{validity} variable is the one determining the output of this node.\\\\
     \bfc{PlaceSuitable -- Condition node}\\
         This node states whether the current robot's location, stored as a blackboard variable, is suitable for crossing.\\
         It uses the second return value from the ROS service called in the \texttt{GetPosition} node. As stated, this value takes into account the road cost for our location from the road-cost algorithm (\ref{sec:road_cost}) and the context score calculated separately before the service call.\\

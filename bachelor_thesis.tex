@@ -20,7 +20,7 @@
     xfaculty = F3,
     mainlanguage = english,
     titlelanguage = english,
-    title-english = {Autonomous road crossing with a mobile robot},
+    title-english = {Autonomous Road Crossing with a Mobile Robot},
     title-czech = {Autonomní přejezd silnice mobilním robotem},
     specification-file = {zadani.pdf},
     front-specification = {true},
@@ -58,7 +58,7 @@
 
     \medskip
 
-    \noindent Prague, date \today
+    \noindent Prague, \today
 
     \medskip\medskip
 
@@ -85,31 +85,38 @@
     \input{sections/Introduction.tex}
 
     \chapter{Theoretical background}
+    \label{chap:theory}
         \input{sections/BT.tex}
         \input{sections/FSM.tex}
         \input{sections/Approach.tex}
         \input{sections/Theory_rest.tex}
 
     \chapter{Used hardware and software}
+    \label{chap:used}
         \input{sections/Software.tex}
         \input{sections/Hardware.tex}
         \input{sections/Gazebo.tex}        
 
     \chapter{Behavior tree algorithm structure}
+    \label{chap:structure}
         \input{sections/BT_structure.tex}
 
     \chapter{Nodes implementation}
+    \label{chap:nodes}
         \input{sections/BT_nodes.tex}
         \input{sections/Aux_functions.tex}
         \input{sections/ROS_functions.tex}
         
     \chapter{Simulation experiments}
+    \label{chap:simulation}
         \input{sections/Simulation.tex}
 
     \chapter{Real-world experiments}
+    \label{chap:real}
         \input{sections/Real_world.tex}
 
     \chapter{Discussion}
+    \label{chap:discussion}
         \input{sections/Discussion.tex}
 
     \chapter*{Conclusion}
