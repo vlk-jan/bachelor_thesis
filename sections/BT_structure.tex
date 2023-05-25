@@ -23,7 +23,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
     The first sub-tree will accomplish the initialization and will be responsible for determining whether the crossing should commence. It is also responsible for navigating the robot to a suitable crossing place. This sub-tree will be called \texttt{Init-BT}.\\
     The second sub-tree is responsible for positioning the robot such that it is perpendicular to the road it is trying to cross. This sub-tree will be called \texttt{Perpendicular-BT}.\\
     The third sub-tree is responsible for the navigation of the robot during the crossing. It will check the position and velocity of incoming traffic and determine the best strategy for the crossing. This sub-tree will be called \texttt{Crossing-BT}.\\
-    There are a few more sub-trees in our structure, but as those are not the main ones, we will not present them here. They will be presented when they are mentioned in the main sub-trees structure. Their main task is to help with the modularity and reusability of the behavior they encode.\\
+    There are a few more sub-trees in our structure, but as those are not the main ones, we will not present them here. They will be presented when they are mentioned in the main sub-trees' structure. Their main task is to help with the modularity and reusability of the behavior they encode.\\
     The main BT is shown in figure \ref{fig:main-BT}.\\
     \begin{figure}[ht]
         \begin{tikzpicture}[sibling distance=30mm, minimum width=1cm, minimum height=0.8cm]
@@ -58,11 +58,12 @@ One of the most important parts of this thesis is the design of the BT algorithm
                 child {node [draw, xshift=1.6cm] {?}
                 child {node [ellipse, draw, xshift=0.4cm] {\texttt{PlaceSuitable}}}
                 child {node [draw, xshift=0.3cm] {?}
-                child {node [draw, xshift=0-0.2cm] {$\to$}
-                child {node [ellipse, draw, xshift=0-0.2cm] {\texttt{BetterPlace}}}
-                child {node [draw, xshift=0.1cm] {\texttt{MoveToPlace}}}}
-                child {node [draw, xshift=0-0.4cm] {\texttt{GetBetterPlace}}}
-                child {node [ellipse, draw, xshift=0-0.9cm] {$\checkmark$}}}}};
+                child {node [draw] {$\to$}
+                child {node [draw] {?}
+                child {node [ellipse, draw, xshift=0-0.4cm] {\texttt{BetterPlace}}}
+                child {node [draw, xshift=0.4cm] {\texttt{GetBetterPlace}}}}
+                child {node [draw] {\texttt{MoveToPlace}}}}
+                child {node [ellipse, draw] {$\checkmark$}}}}};
         \end{tikzpicture}
         \caption{The Init-BT structure.}
         \label{fig:Init-BT}
@@ -117,8 +118,8 @@ One of the most important parts of this thesis is the design of the BT algorithm
     The third child of the \texttt{Sequence} node is a structure of cascading if-else statements. The structure gradually checks the following conditions and performs the corresponding actions based on the results.\\
     The first condition is the \texttt{CollisionFwdMove}. This node checks if the robot is about to collide with any of the detected vehicles in front. If it is not, the robot will continue moving forward.\\
     If a collision is detected, we check if another collision would occur if we were to stop the robot. A condition node \texttt{CollisionOnStop} is responsible for the detection. If not, we can stop the robot.\\
-    With condition node \texttt{CollisionBwdMove} we check if the robot can move backward. If it can, we do so, providing there would be a collision on stop. If there would be a collision on the backward movement, we will stop the robot instead.\\
-    The robot will also stop its movement in case we tick a movement node and the movement is not successful. This could arrise if the velocity options do not provide a safe margin.\\
+    With condition node \texttt{CollisionBwdMove}, we check if the robot can move backward. If it can, we do so, providing there would be a collision on stop. If there would be a collision on the backward movement, we will stop the robot instead.\\
+    The robot will also stop its movement if we tick a movement node and the movement is unsuccessful. This could arise if the velocity options do not provide a safe margin.\\
     \begin{figure}[H]
         \begin{tikzpicture}[sibling distance=28mm, minimum width=1cm, minimum height=0.8cm]
             \node [draw] {$Root$}
@@ -141,7 +142,7 @@ One of the most important parts of this thesis is the design of the BT algorithm
                 child {node [ellipse, draw, xshift=0-0.15cm] {\texttt{CollisionOnStop}}}
                 child {node [draw] {$\neq$}
                 child {node [ellipse, draw] {\texttt{CollisionBwdMove}}}}
-                child {node [draw, xshift=0-1.1cm] {\texttt{MoveBwd}}}}
+                child {node [draw, xshift=0-1.2cm] {\texttt{MoveBwd}}}}
                 child {node [draw, xshift=0-0.7cm] {\texttt{StopMovement}}}}}
                 child {node [draw, xshift=0-2.3cm, yshift=0-1.5cm] {\texttt{MoveFwd}}}
                 child {node [draw, xshift=0-2.8cm, yshift=0-1.5cm] {\texttt{StopMovement}}}}}}

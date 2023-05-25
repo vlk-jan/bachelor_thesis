@@ -38,14 +38,14 @@
                 \caption{Visualization of key elements in the road cost algorithm.}
             \end{figure}
         \bfc{Usage}\\
-            As was stated earlier, this algorithm is executed only once preferably during the pre-mission planning. Later we only keep the final costs, and based on them, we determine if the location where the robot is trying to cross is suitable and safe.\\
+            As was stated earlier, this algorithm is executed only once, preferably during the pre-mission planning. Later we only keep the final costs, and based on them, we determine if the location where the robot is trying to cross is suitable and safe.\\
             We rely on ROS to enable the communication between our main algorithm and the algorithm for determining the suitability of the location for crossing. We implemented a ROS service for this purpose.\\
             Another part of the algorithm that could be implemented in future work is to try and provide the robot with a more suitable crossing place. This could be used if the pre-mission planning was not performed or the robot's path changed, and the current location is unsuitable. If such a place is found and provided, a cost map that will be used to change the current cost map of the path planner should be published. This is done so that the robot's controls are not overridden until we begin the crossing itself.\\
             The effect of this algorithm on a path planner is shown in image \ref{fig:path}.
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.53\textwidth]{images/path.png}
-                \caption{The effect of the road cost algorithm on the path planning.}
+                \caption{The effect of the road cost algorithm on path planning.}
                 \label{fig:path}
             \end{figure}
 

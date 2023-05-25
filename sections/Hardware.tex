@@ -22,12 +22,12 @@
                 \caption{The Spot robot configuration.}
                 \label{fig:spot}
             \end{subfigure}
-            \caption{Robots used in the real-world experiments.}
+            \caption{Robots available for real-world experiments.}
         \end{figure}
         \noindent The photos are courtesy of CRAS at FEE CTU.
 
     \subsection{Sensors}
-        The capabilities of our robots are highly dependent on the sensors we attach to them. Without them, the possibilities and options for missions are minimal. In our work, we will use some sensors directly and some indirectly. The indirect usage of sensors is connected with dependencies on other projects. One notable example is the detection of vehicles and other obstacles. This detection is not in the scope of our work but is instrumental to its success. The design of the algorithm was done in a way as to not be reliant on a specific sensors for vehicle detection.\\\\
+        The capabilities of our robots are highly dependent on the sensors we attach to them. Without them, the possibilities and options for missions are minimal. In our work, we will use some sensors directly and some indirectly. The indirect usage of sensors is connected with dependencies on other projects. One notable example is the detection of vehicles and other obstacles. This detection is not in the scope of our work but is instrumental to its success. The design of the algorithm was done in a way to not be reliant on a specific sensor for vehicle detection.\\\\
         \bfc{Magnetometer}\\
             This is one of the sensors we use directly. We use it to determine the azimuth of our robot and help it position itself perpendicular to the road it will try to cross.\\
             We say that the sensor is used directly. However, the transformation of the IMU magnetometer data into the azimuth was not implemented as a part of this work.\\\\

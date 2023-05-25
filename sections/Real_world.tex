@@ -59,7 +59,7 @@ The experiments were conducted in a controlled environment, with the robot cross
             \begin{figure}[H]
                 \centering
                 \includegraphics[height=7.5cm]{images/real_trajectory.png}
-                \caption{Trajectory of the robot during the experiment without vehicles, the robot's position is shown both with odometry and gps (fix) data.}
+                \caption{Trajectory of the robot during the experiment without vehicles, the robot's position is shown with odometry and gps (fix) data.}
                 \label{fig:trajectory1}
             \end{figure}
 
@@ -68,5 +68,5 @@ The experiments were conducted in a controlled environment, with the robot cross
         These experiments were more challenging as we had to troubleshoot the detection node. The implementation and functionality of the detection node were not a part of this thesis, and the time for its development was limited. We were able to conduct only one successful experiment with the detection node, as the detection node could not consistently detect the AprilTag in the other experiments. Given the constraints on the time available, fixing the detection node to conduct more experiments was not feasible. Furthermore, the omission of a result from the successful experiment was not intentional, as it was not presumed that only a solitary experiment would succeed. Therefore the experiment was not recorded.
 
     \subsection{Evaluation of the experiments}
-        The performed experiments were successful in testing the algorithm's ability to use real data. The robot was able to utilize data from GNSS and magnetometer to determine its position and orientation. Furthermore, providing the detection data were available the robot was able to interpret them correctly.\\
-        The experimental verification demonstrated the algorithm's effective control over the robot's movement. Rigorous testing of the safety measures was not possible, however, from the observed behavior we could conclude that they are functional, but not if they are optimal.
+        The performed experiments were successful in testing the algorithm's ability to use real data. The robot was able to utilize data from GNSS and magnetometer to determine its position and orientation. Furthermore, providing the detection data were available, the robot was able to interpret them correctly.\\
+        The experimental verification demonstrated the algorithm's effective control over the robot's movement. Rigorous testing of the safety measures was not possible, however, from the observed behavior, we could conclude that they are functional, but not if they are optimal.

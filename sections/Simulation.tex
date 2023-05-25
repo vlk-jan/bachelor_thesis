@@ -15,7 +15,7 @@ All of the experiments were conducted in the Gazebo Classic simulator.
     We will present multiple figures with the settings of the vehicles relative to the robot. All used units correspond to the ones defined in section \ref{sec:Crossing-BT-impl}. The distances between objects in overviews are relative, not absolute. Also, if acceleration is not specified, it is assumed to be zero.\\
     \subsection{Used metrics}
     \label{sec:metrics}
-        One of our tasks in the thesis assignement was to propose a metric for measuring the optimality of the robot's movement. The metric we created and used for evaluation is presented in this section.\\
+        One of our tasks in the thesis assignment was to propose a metric for measuring the optimality of the robot's movement. The metric we created and used for evaluation is presented in this section.\\
         With each simulation experiment, we will present two graphs. One graph will show the minimal distance between the bounding boxes of the robot and the vehicle. The second graph will show the velocities of the vehicles and the robot during its movement.\\
         The minimal distance between the bounding boxes of the robot and the vehicle is a good metric for measuring the safety of the robot's movement. The smaller the distance, the higher the risk of collision.\\
         The velocities of the robot are also a good metric for measuring the optimality of the robot's movement. The higher the velocity, the faster the robot will reach its goal.\\
@@ -69,7 +69,7 @@ All of the experiments were conducted in the Gazebo Classic simulator.
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_1_vel.pdf}
                     \caption{Velocities of the robot and vehicles during the crossing.}
                 \end{subfigure}
-                \caption{Results for the first sub-scenario in the second scenario of simulation.}
+                \caption{Results for the first sub-scenario in the second scenario of simulations.}
                 \label{fig:scene2_1_graphs}
             \end{figure}
             \begin{figure}[H]
@@ -84,7 +84,7 @@ All of the experiments were conducted in the Gazebo Classic simulator.
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_2_vel.pdf}
                     \caption{Velocities of the robot and vehicles during the crossing.}
                 \end{subfigure}
-                \caption{Results for the second sub-scenario in the second scenario of simulation.}
+                \caption{Results for the second sub-scenario in the second scenario of simulations.}
                 \label{fig:scene2_2_graphs}
             \end{figure}
             \begin{figure}[H]
@@ -99,7 +99,7 @@ All of the experiments were conducted in the Gazebo Classic simulator.
                     \includegraphics[trim={21 8 40 41}, clip, width=\linewidth]{images/simulations/scene2_3_vel.pdf}
                     \caption{Velocities of the robot and vehicles during the crossing.}
                 \end{subfigure}
-                \caption{Results for the third sub-scenario in the second scenario of simulation experiments.}
+                \caption{Results for the third sub-scenario in the second scenario of simulations.}
                 \label{fig:scene2_3_graphs}
             \end{figure}
         \bfc{Scenario 3}\\
@@ -195,7 +195,7 @@ All of the experiments were conducted in the Gazebo Classic simulator.
             \end{figure}
     \subsection{Evaluation of the results}
         In this section, we will discuss the results of the simulation experiments. We will use the metric proposed in section \ref{sec:metrics}.\\
-        From the distance graphs, we can see that the robot was able to maintain a safe distance from the vehicles. The minimal distance, shown in table \ref{tab:dist}, was never smaller than $0.5\:\si{\m}$, and most these minimal distances were achieved after the vehicle crossed the robot's path. Therefore, there was no danger of collision even if the vehicle performed some unexpected maneuver.\\
+        From the distance graphs, we can see that the robot was able to maintain a safe distance from the vehicles. The minimal distance, shown in table \ref{tab:dist}, was never smaller than $0.5\:\si{\m}$, and most of these minimal distances were achieved after the vehicle crossed the robot's path. Therefore, there was no danger of collision even if the vehicle performed some unexpected maneuver.\\
         \begin{table}[H]
             \centering
             \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
@@ -260,8 +260,8 @@ All of the experiments were conducted in the Gazebo Classic simulator.
         The results for the time to contact indicate that the robot would be able to react and avoid a collision even in the case of an unexpected stop of the vehicle. The minimal values are all above $0.8\:\si{\s}$, and with the expected rate of detection node being $5\:\si{\Hz}$, it would have enough time to adapt. This is true even when we take into consideration the latency of obtaining the data from the detection node. We do not expect this latency to be higher than $0.2\:\si{\s}$, which would still provide about $0.4\:\si{\s}$ for the robot to react.\\
         Interpretation of the results for the start time change is straightforward. The robot starts moving at the time $t=0$. The negative values mean the robot must start earlier to collide, and the positive values indicate the robot must start later. The calculated times correspond to the velocities the robot had during the successful crossings. Each result in a scenario is associated with a specific vehicle, and their order is determined by their ID.
     \subsection{Interesting points from trajectories}
-        We will show some interesting points from the trajectories of the movement of the robot and the vehicles. The parts we will show are when the robot began its movement, figure \ref{fig:start}, and got closest to the vehicle, figure \ref{fig:closest}. We will not show the starts in scenarios 2.1 and 2.3 as in scenario 2.1 the robot never began its movement, and in 2.3 it started immediately.\\
-        The points shown as trajectories are the centers of the objects. In the vehicle trajectories it is evident that most of the experiments contained a vehicle detection error. 
+        We will show some interesting points from the trajectories of the movement of the robot and the vehicles. The parts we will show were when the robot began its movement, figure \ref{fig:start}, and got closest to the vehicle, figure \ref{fig:closest}. We will not show the starts in scenarios 2.1 and 2.3, as in scenario 2.1 the robot never began its movement, and in 2.3 it started immediately.\\
+        The points shown as trajectories are the centers of the objects. In the vehicle trajectories, it is evident that most of the experiments contained a vehicle detection error. 
         \begin{figure}[H]
             \centering
             \begin{subfigure}{0.49\linewidth}
@@ -341,6 +341,6 @@ All of the experiments were conducted in the Gazebo Classic simulator.
                 \includegraphics[width=\linewidth]{images/simulations/closest_5.png}
                 \caption{Scenario 5.}
             \end{subfigure}
-            \caption{The places of minimal distance between the robot and vehicle in the simulation experiments.}
+            \caption{The places of the minimal distance between the robot and vehicle in the simulation experiments.}
             \label{fig:closest}
         \end{figure}
